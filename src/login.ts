@@ -64,7 +64,7 @@ function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, man
                 var kubeconfig = Buffer.from(accessProfile.properties.kubeConfig, 'base64');
                 resolve(kubeconfig.toString());
             } else {
-                reject(response.body);
+                reject(JSON.stringify(response.body));
             }
         }).catch(reject);
     });
