@@ -1,0 +1,23 @@
+{
+  "name": "aks-set-context-action",
+  "version": "0.0.0",
+  "private": true,
+  "main": "lib/login.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "setup"
+  ],
+  "author": "GitHub",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.0.0",
+    "typed-rest-client": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.4"
+  }
+}
