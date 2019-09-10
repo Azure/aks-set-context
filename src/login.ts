@@ -60,8 +60,12 @@ function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, man
         }
         sendRequest(webRequest).then((response: WebResponse) => {
             let accessProfile = response.body;
-            var kubeconfig = Buffer.from(accessProfile.properties.kubeConfig, 'base64');
-            resolve(kubeconfig.toString());
+            if (accessProfile.properties && accessProfile.properties.kubeConfig) {
+                var kubeconfig = Buffer.from(accessProfile.properties.kubeConfig, 'base64');
+                resolve(kubeconfig.toString());
+            } else {
+                reject(response.body);
+            }
         }).catch(reject);
     });
 }
