@@ -1,9 +1,9 @@
 # Azure Kubernetes Service set context
 
-Used for setting the target AKS cluster context which will be used by other actions like [`azure/k8s-actions/k8s-deploy`](https://github.com/Azure/k8s-actions/tree/master/k8s-deploy), [`azure/k8s-actions/k8s-create-secret`](https://github.com/Azure/k8s-actions/tree/master/k8s-create-secret) etc. or run any [kubectl]   (https://kubernetes.io/docs/reference/kubectl/overview/) commands.
+Used for setting the target AKS cluster context which will be used by other actions like [`azure/k8s-deploy`](https://github.com/Azure/k8s-deploy/tree/master), [`azure/k8s-create-secret`](https://github.com/Azure/k8s-create-secret/tree/master) etc. or run any [kubectl]   (https://kubernetes.io/docs/reference/kubectl/overview/) commands.
 
 ```yaml
-uses: azure/k8s-actions/aks-set-context@master
+uses: azure/aks-set-context@v1
     with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}' # Azure credentials
         resourceGroupName: '<resource group name>'
@@ -11,7 +11,7 @@ uses: azure/k8s-actions/aks-set-context@master
     id: login
 ```
 
-Refer to the action metadata file for details about all the inputs https://github.com/Azure/k8s-actions/blob/master/aks-set-context/action.yml
+Refer to the action metadata file for details about all the inputs https://github.com/Azure/aks-set-context/blob/master/action.yml
 
 ## Azure credentials
 Run `az ad sp create-for-rbac --sdk-auth` to generate an Azure Active Directory service principals.
