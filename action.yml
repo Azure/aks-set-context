@@ -1,5 +1,5 @@
-name: 'AKS set context'
-description: 'Sets the kubeconfig on the machine to communicate with the AKS cluster'
+name: 'Azure Kubernetes set context'
+description: 'Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster'
 inputs: 
   creds:
     description: 'Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`'
