@@ -82,8 +82,8 @@ async function getKubeconfig(): Promise<string> {
     let servicePrincipalId = credsObject["clientId"];
     let servicePrincipalKey = credsObject["clientSecret"];
     let tenantId = credsObject["tenantId"];
-    let authorityUrl = credsObject["activeDirectoryEndpointUrl"];
-    let managementEndpointUrl = credsObject["resourceManagerEndpointUrl"];
+    let authorityUrl = credsObject["activeDirectoryEndpointUrl"] || "https://login.microsoftonline.com";
+    let managementEndpointUrl = credsObject["resourceManagerEndpointUrl"] || "https://management.azure.com/";
     let subscriptionId = credsObject["subscriptionId"];
     let azureSessionToken = await getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, authorityUrl);
     let kubeconfig = await getAKSKubeconfig(azureSessionToken, subscriptionId, managementEndpointUrl);
