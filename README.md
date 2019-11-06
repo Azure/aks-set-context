@@ -6,8 +6,8 @@ Used for setting the target AKS cluster context which will be used by other acti
 uses: azure/aks-set-context@v1
     with:
         creds: '${{ secrets.AZURE_CREDENTIALS }}' # Azure credentials
-        resourceGroupName: '<resource group name>'
-        clusterName: '<cluster name>'
+        resource-group: '<resource group name>'
+        cluster-name: '<cluster name>'
     id: login
 ```
 
