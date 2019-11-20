@@ -1,6 +1,32 @@
 # Azure Kubernetes Service set context
 
-Used for setting the target AKS cluster context which will be used by other actions like [`azure/k8s-deploy`](https://github.com/Azure/k8s-deploy/tree/master), [`azure/k8s-create-secret`](https://github.com/Azure/k8s-create-secret/tree/master) etc. or run any [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) commands.
+This action can be used to set cluster context before other actions like [`azure/k8s-deploy`](https://github.com/Azure/k8s-deploy/tree/master), [`azure/k8s-create-secret`](https://github.com/Azure/k8s-create-secret/tree/master) or any kubectl commands (in script) can be run subsequently in the workflow.
+
+## Action inputs
+
+<table>
+  <thead>
+    <tr>
+      <th>Action inputs</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+
+  <tr>
+    <td><code>creds</code><br/>Credentials</td>
+    <td>(Required) Credentials required to authenticate with Azure. Steps to obtain these credentials are provided below</td>
+  </tr>
+  <tr>
+    <td><code>resource-group</code><br/>Resource group</td>
+    <td>(Required) Resource group containing the AKS cluster</td>
+  </tr>
+  <tr>
+    <td><code>cluster-name</code><br/>Cluster name</td>
+    <td>(Required) Name of the AKS cluster</td>
+  </tr>
+</table>
+
+## Example
 
 ```yaml
 uses: azure/aks-set-context@v1
@@ -11,11 +37,15 @@ uses: azure/aks-set-context@v1
     id: login
 ```
 
-Refer to the action metadata file for details about all the inputs https://github.com/Azure/aks-set-context/blob/master/action.yml
+To fetch the credentials required to authenticate with Azure, run the following command:
 
-## Azure credentials
-Run `az ad sp create-for-rbac --sdk-auth` to generate an Azure Active Directory service principals.
-For more details refer to: [az ad sp create-for-rbac](https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create-for-rbac)
+```sh
+az ad sp create-for-rbac --sdk-auth
+```
+
+For more details on this command, refer to [service principal documentation](https://docs.microsoft.com/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create-for-rbac)
+
+This generates a service principal and the output of the above command will be in the following format:
 
 ```json
 {
@@ -31,13 +61,14 @@ For more details refer to: [az ad sp create-for-rbac](https://docs.microsoft.com
   "managementEndpointUrl": "https://management.core.windows.net/"
 }
 ```
-## Using secret
-Now add the json output as [a secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) in the GitHub repository. In the above example the secret name is `AZURE_CREDENTIALS` and it can be used in the workflow by using the following syntax:
-```yaml
-creds: '${{ secrets.AZURE_CREDENTIALS }}'
-```
 
-# Contributing
+Store this JSON output as a [secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) in the GitHub repository.
+
+## Using secret
+
+Now add the json output as [a secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) (let's say with the name `AZURE_CREDENTIALS`) in the GitHub repository. The example YAML snippet given above showcases how this secret is referenced in the action for specifying the credentials as input to the action.
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
