@@ -64,9 +64,7 @@ This generates a service principal and the output of the above command will be i
 
 Store this JSON output as a [secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) in the GitHub repository.
 
-## Using secret
-
-Now add the json output as [a secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) (let's say with the name `AZURE_CREDENTIALS`) in the GitHub repository. The example YAML snippet given above showcases how this secret is referenced in the action for specifying the credentials as input to the action.
+Add the json output as [a secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) (let's say with the name `AZURE_CREDENTIALS`) in the GitHub repository. The example YAML snippet given above showcases how this secret is referenced in the action for specifying the credentials as input to the action.
 
 ## Contributing
 
