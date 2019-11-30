@@ -1,5 +1,5 @@
 name: 'Azure Kubernetes set context'
-description: 'Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster'
+description: 'Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster. Github.com/Azure/Actions'
 inputs: 
   creds:
     description: 'Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`'
