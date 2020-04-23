@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { WebRequest, WebRequestOptions, WebResponse, sendRequest } from "./client";
 import * as querystring from 'querystring';
 
-function getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, authorityUrl): Promise<string> {
+function getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, authorityUrl, managementEndpointUrl : string): Promise<string> {
 
     if (!servicePrincipalId || !servicePrincipalKey || !tenantId || !authorityUrl) {
         throw new Error("Not all values are present in the creds object. Ensure appId, password and tenant are supplied");
@@ -15,7 +15,7 @@ function getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, 
         webRequest.method = "POST";
         webRequest.uri = `${authorityUrl}/${tenantId}/oauth2/token/`;
         webRequest.body = querystring.stringify({
-            resource: 'https://management.azure.com',
+            resource: managementEndpointUrl,
             client_id: servicePrincipalId,
             grant_type: "client_credentials",
             client_secret: servicePrincipalKey
@@ -85,7 +85,7 @@ async function getKubeconfig(): Promise<string> {
     let authorityUrl = credsObject["activeDirectoryEndpointUrl"] || "https://login.microsoftonline.com";
     let managementEndpointUrl = credsObject["resourceManagerEndpointUrl"] || "https://management.azure.com/";
     let subscriptionId = credsObject["subscriptionId"];
-    let azureSessionToken = await getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, authorityUrl);
+    let azureSessionToken = await getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, authorityUrl, managementEndpointUrl);
     let kubeconfig = await getAKSKubeconfig(azureSessionToken, subscriptionId, managementEndpointUrl);
     return kubeconfig;
 }
