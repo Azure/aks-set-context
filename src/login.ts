@@ -34,7 +34,7 @@ function getAzureAccessToken(servicePrincipalId, servicePrincipalKey, tenantId, 
                     resolve(response.body.access_token);
                 }
                 else if ([400, 401, 403].indexOf(response.statusCode) != -1) {
-                    reject('ExpiredServicePrincipal');
+                    reject(response.statusMessage);
                 }
                 else {
                     reject('CouldNotFetchAccessTokenforAzureStatusCode');
