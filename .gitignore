@@ -10,7 +10,7 @@
 *.sln.docstates
 
 # dependencies
-/node_modules
+/node_modules/@types
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
