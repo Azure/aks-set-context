@@ -66,6 +66,8 @@ This generates a service principal and the output of the above command will be i
 
 Add the json output as [a secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) (let's say with the name `AZURE_CREDENTIALS`) in the GitHub repository. The example YAML snippet given above showcases how this secret is referenced in the action for specifying the credentials as input to the action.
 
+aks-set-context GitHub Actions is supported for the Azure public cloud as well as Azure government clouds ('AzureUSGovernment' or 'AzureChinaCloud'). Before running this action, login to the respective Azure Cloud  using [Azure Login](https://github.com/Azure/login) by setting appropriate value for the `environment` parameter.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
