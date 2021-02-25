@@ -15,7 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "typed-rest-client": "^1.5.0"
+    "@azure-actions/auth": "0.0.2",
+    "@azure-actions/utilities": "0.0.2"
   },
   "devDependencies": {
     "@types/node": "^12.0.4"
