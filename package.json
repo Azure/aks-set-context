@@ -4,7 +4,9 @@
   "private": true,
   "main": "lib/login.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest",
+    "test-coverage": "jest --coverage"
   },
   "keywords": [
     "actions",
@@ -19,6 +21,10 @@
     "@azure-actions/utilities": "0.0.2"
   },
   "devDependencies": {
-    "@types/node": "^12.0.4"
+    "@types/node": "^12.0.4",
+    "jest": "^25.5.4",
+    "@types/jest": "^25.2.2",
+    "ts-jest": "^25.5.1",
+    "typescript": "3.9.2"
   }
 }

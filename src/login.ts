@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { WebRequest, WebResponse, sendRequest } from "@azure-actions/utilities/lib/http";
 import { getAzureAccessToken } from '@azure-actions/auth';
 
-function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, managementEndpointUrl: string): Promise<string> {
+export function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, managementEndpointUrl: string): Promise<string> {
     let resourceGroupName = core.getInput('resource-group', { required: true });
     let clusterName = core.getInput('cluster-name', { required: true });
     return new Promise<string>((resolve, reject) => {
@@ -27,7 +27,7 @@ function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, man
     });
 }
 
-async function getKubeconfig(): Promise<string> {
+export async function getKubeconfig(): Promise<string> {
     let creds = core.getInput('creds', { required: true });
     let credsObject: { [key: string]: string; };
     try {
@@ -43,7 +43,7 @@ async function getKubeconfig(): Promise<string> {
     return kubeconfig;
 }
 
-async function run() {
+export async function run() {
     let kubeconfig = await getKubeconfig();
     const runnerTempDirectory = process.env['RUNNER_TEMP']; // Using process.env until the core libs are updated
     const kubeconfigPath = path.join(runnerTempDirectory, `kubeconfig_${Date.now()}`);
