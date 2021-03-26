@@ -1,0 +1,22 @@
+name: "build-test"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+    branches:
+      - master
+      - 'releases/*'
+  push:
+    branches:
+      - master
+      - 'releases/*'
+
+jobs:
+  build: # make sure build/ci works properly
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Build and run L0 tests.
+      run: |
+        npm install
+        npm run build
+        npm test
