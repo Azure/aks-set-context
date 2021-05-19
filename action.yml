@@ -1,24 +1,24 @@
-name: "Azure Kubernetes set context"
-description: "Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster. Github.com/Azure/Actions"
+name: 'Azure Kubernetes set context'
+description: 'Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster. Github.com/Azure/Actions'
 inputs:
   creds:
-    description: "Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`"
+    description: 'Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`'
     required: true
-    default: ""
+    default: ''
   resource-group:
-    description: "Resource Group Name"
+    description: 'Resource Group Name'
     required: false
-    default: ""
+    default: ''
   cluster-name:
-    description: "AKS Cluster Name"
+    description: 'AKS Cluster Name'
     required: false
-    default: ""
+    default: ''
   admin:
-    description: "Is context user admin, set to `'false'` to use clusterUser creds instead."
+    description: 'Is context user admin, set to `'false'` to use clusterUser creds instead.'
     required: false
-    default: "true"
+    default: 'true'
 branding:
-  color: "green" # optional, decorates the entry in the GitHub Marketplace
+  color: 'green' # optional, decorates the entry in the GitHub Marketplace
 runs:
-  using: "node12"
-  main: "lib/login.js"
+  using: 'node12'
+  main: 'lib/login.js'
