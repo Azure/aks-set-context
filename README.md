@@ -26,6 +26,10 @@ Refer to [starter templates](https://github.com/Azure/actions-workflow-samples/t
     <td><code>cluster-name</code><br/>Cluster name</td>
     <td>(Required) Name of the AKS cluster</td>
   </tr>
+  <tr>
+    <td><code>admin</code><br/>admin</td>
+    <td>(Optional) default <code>true</code> for admin credentials, <code>false</code> gets the clusterUser credentials instead.</td>
+  </tr>
 </table>
 
 ## Example
