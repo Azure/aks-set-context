@@ -7,7 +7,7 @@ import { getAzureAccessToken } from '@azure-actions/auth';
 function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, managementEndpointUrl: string): Promise<string> {
     let resourceGroupName = core.getInput('resource-group', { required: true });
     let clusterName = core.getInput('cluster-name', { required: true });
-    let useClusterAdminRole = core.getInput('use-admin-role', {required: false});
+    let useClusterAdminRole = core.getInput('use-admin-role', {required: false}).toLowerCase() === "true";
     let roleName = useClusterAdminRole ? "listClusterAdminCredential" : "listClusterUserCredential";
     return new Promise<string>((resolve, reject) => {
         var webRequest = new WebRequest();
