@@ -13,7 +13,7 @@ inputs:
     description: 'AKS Cluster Name'
     required: false
     default: ''
-  use-admin-role:
+  admin:
     description: 'Gets the accessProfile for the clusterAdmin role of the managed cluster if set as true.If set to false, it gets the access profile for the clusterUser role'
     required: false
     default: true
