@@ -8,11 +8,11 @@ function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, man
     let resourceGroupName = core.getInput('resource-group', { required: true });
     let clusterName = core.getInput('cluster-name', { required: true });
     let useClusterAdminRole = core.getInput('admin', {required: false}).toLowerCase() === "true";
-    let roleName = useClusterAdminRole ? "listClusterAdminCredential" : "listClusterUserCredential";
+    let roleName = useClusterAdminRole ? "clusterAdmin" : "clusterUser";
     return new Promise<string>((resolve, reject) => {
         var webRequest = new WebRequest();
         webRequest.method = 'POST';
-        webRequest.uri = `${managementEndpointUrl}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/${clusterName}/${roleName}?api-version=2021-03-01`;
+        webRequest.uri = `${managementEndpointUrl}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/${clusterName}/accessProfiles/${roleName}/listCredential?api-version=2021-03-01`;
         webRequest.headers = {
             'Authorization': 'Bearer ' + azureSessionToken,
             'Content-Type': 'application/json; charset=utf-8'
