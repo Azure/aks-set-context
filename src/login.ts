@@ -12,7 +12,7 @@ function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, man
     return new Promise<string>((resolve, reject) => {
         var webRequest = new WebRequest();
         webRequest.method = 'POST';
-        webRequest.uri = `${managementEndpointUrl}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/${clusterName}/accessProfiles/${roleName}/listCredential?api-version=2021-03-01`;
+        webRequest.uri = `${managementEndpointUrl}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/${clusterName}/accessProfiles/${roleName}/listCredential?api-version=2017-08-31`;
         webRequest.headers = {
             'Authorization': 'Bearer ' + azureSessionToken,
             'Content-Type': 'application/json; charset=utf-8'
