@@ -12,18 +12,15 @@ function getAKSKubeconfig(azureSessionToken: string, subscriptionId: string, man
     return new Promise<string>((resolve, reject) => {
         var webRequest = new WebRequest();
         webRequest.method = 'POST';
-        webRequest.uri = `${managementEndpointUrl}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/${clusterName}/accessProfiles/${roleName}/listCredential?api-version=2017-08-31`;
+        webRequest.uri = `${managementEndpointUrl}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ContainerService/managedClusters/${clusterName}/accessProfiles/${roleName}/listCredential?api-version=2021-03-01`;
         webRequest.headers = {
             'Authorization': 'Bearer ' + azureSessionToken,
             'Content-Type': 'application/json; charset=utf-8'
         }
         sendRequest(webRequest).then((response: WebResponse) => {
-            let kubeConfigList = response.body && response.body["kubeconfigs"];
-            if (kubeConfigList && 
-                kubeConfigList.length > 0 &&
-                kubeConfigList[0] &&
-                kubeConfigList[0].value) {
-                var kubeconfig = Buffer.from(kubeConfigList[0].value, 'base64');
+            let accessProfile = response.body;
+            if (accessProfile.properties && accessProfile.properties.kubeConfig) {
+                var kubeconfig = Buffer.from(accessProfile.properties.kubeConfig, 'base64');
                 resolve(kubeconfig.toString());
             } else {
                 reject(JSON.stringify(response.body));
