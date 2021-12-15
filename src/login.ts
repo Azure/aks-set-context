@@ -51,7 +51,7 @@ export async function run() {
     fs.writeFileSync(kubeconfigPath, kubeconfig);
     fs.chmodSync(kubeconfigPath, '600');
     core.exportVariable('KUBECONFIG', kubeconfigPath);
-    console.log('KUBECONFIG environment variable is set');
+    core.debug('KUBECONFIG environment variable is set');
 }
 
 run().catch(core.setFailed);
