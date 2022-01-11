@@ -37,7 +37,7 @@ export async function getKubeconfig(): Promise<string> {
     }
 
     const managementEndpointUrl = credsObject["resourceManagerEndpointUrl"] || "https://management.azure.com/";
-    const subscriptionId = credsObject["subscriptionId"];
+    const subscriptionId = core.getInput('subscription-id') || credsObject["subscriptionId"];
     const azureSessionToken = await getAzureAccessToken(creds);
     const kubeconfig = await getAKSKubeconfig(azureSessionToken, subscriptionId, managementEndpointUrl);
     return kubeconfig;
