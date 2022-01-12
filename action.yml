@@ -12,6 +12,10 @@ inputs:
   cluster-name:
     description: 'AKS Cluster Name'
     required: false
+    default: ''  
+  subscription-id:
+    description: 'Subscription ID'
+    required: false
     default: ''
 branding:
   color: 'green' # optional, decorates the entry in the GitHub Marketplace
