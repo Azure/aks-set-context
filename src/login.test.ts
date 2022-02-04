@@ -1,4 +1,4 @@
-import * as login from '../src/login'
+import * as login from './login'
 import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
