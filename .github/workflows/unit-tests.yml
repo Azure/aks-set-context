@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Run L0 tests.
+      - name: Run unit tests
         run: |
           npm install
           npm test
