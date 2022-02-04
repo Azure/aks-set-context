@@ -4,15 +4,12 @@ inputs:
   creds:
     description: "Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`"
     required: true
-    default: ""
   resource-group:
     description: "Resource Group Name"
-    required: false
-    default: ""
+    required: true
   cluster-name:
     description: "AKS Cluster Name"
-    required: false
-    default: ""
+    required: true
   subscription-id:
     description: "Subscription ID"
     required: false
