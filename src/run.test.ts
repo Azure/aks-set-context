@@ -24,7 +24,9 @@ describe("Testing all functions in login file.", () => {
       await login.getAKSKubeconfig(
         "<access_token>",
         "<subscription id>",
-        "https://management.azure.com/"
+        "https://management.azure.com/",
+        "sample-rg",
+        "testing"
       )
     ).toBe("###");
     const request = {
@@ -40,10 +42,6 @@ describe("Testing all functions in login file.", () => {
   });
 
   test("getAKSKubeconfig() - reject if response not in expected format", async () => {
-    jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
-      if (inputName == "resource-group") return "sample-rg";
-      if (inputName == "cluster-name") return "testing";
-    });
     const response = {
       statusCode: 200,
       body: {
@@ -56,7 +54,9 @@ describe("Testing all functions in login file.", () => {
       .getAKSKubeconfig(
         "<access_token>",
         "<subscription id>",
-        "https://management.azure.com/"
+        "https://management.azure.com/",
+        "sample-rg",
+        "testing"
       )
       .then((response) => expect(response).toBeUndefined())
       .catch((error) => expect(error).toBe(JSON.stringify(response.body)));
@@ -73,10 +73,6 @@ describe("Testing all functions in login file.", () => {
   });
 
   test("getAKSKubeconfig() - reject if error recieved", async () => {
-    jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
-      if (inputName == "resource-group") return "sample-rg";
-      if (inputName == "cluster-name") return "testing";
-    });
     jest
       .spyOn(azureActionsUtil, "sendRequest")
       .mockRejectedValue("ErrorMessage");
@@ -85,7 +81,9 @@ describe("Testing all functions in login file.", () => {
       .getAKSKubeconfig(
         "<access_token>",
         "<subscription id>",
-        "https://management.azure.com/"
+        "https://management.azure.com/",
+        "sample-rg",
+        "testing"
       )
       .then((response) => expect(response).toBeUndefined())
       .catch((error) => expect(error).toBe("ErrorMessage"));
@@ -104,9 +102,9 @@ describe("Testing all functions in login file.", () => {
   test("getKubeconfig() - reject if incorrect credentials", async () => {
     jest.spyOn(core, "getInput").mockReturnValue("Wrong cred.");
 
-    await expect(login.getKubeconfig()).rejects.toThrow(
-      "Credentials object is not a valid JSON"
-    );
+    await expect(
+      login.getKubeconfig({}, "subscriptionId", "sample-rg", "testing")
+    ).rejects.toThrow();
   });
 
   test("getKubeconfig() - get access token, use it to get kubeconfig and return it ", async () => {
@@ -136,18 +134,13 @@ describe("Testing all functions in login file.", () => {
         access_token: "<access_token>",
       },
     } as azureActionsUtil.WebResponse;
-    jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
-      if (inputName == "resource-group") return "sample-rg";
-      if (inputName == "cluster-name") return "testing";
-      if (inputName == "creds") return JSON.stringify(creds);
-    });
     jest
       .spyOn(azureActionsUtil, "sendRequest")
       .mockResolvedValueOnce(responseLogin)
       .mockResolvedValueOnce(responseKube);
 
     await login
-      .getKubeconfig()
+      .getKubeconfig(creds, creds["subscriptionId"], "sample-rg", "testing")
       .then((response) => expect(response).toBe("###"))
       .catch((error) => expect(error).toBeUndefined());
     const requestForToken = {
@@ -202,18 +195,13 @@ describe("Testing all functions in login file.", () => {
         access_token: "<access_token>",
       },
     } as azureActionsUtil.WebResponse;
-    jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
-      if (inputName == "resource-group") return "sample-rg";
-      if (inputName == "cluster-name") return "testing";
-      if (inputName == "creds") return JSON.stringify(creds);
-    });
     jest
       .spyOn(azureActionsUtil, "sendRequest")
       .mockResolvedValueOnce(responseLogin)
       .mockResolvedValueOnce(responseKube);
 
     await login
-      .getKubeconfig()
+      .getKubeconfig(creds, creds["subscriptionId"], "sample-rg", "testing")
       .then((response) => expect(response).toBe("###"))
       .catch((error) => expect(error).toBeUndefined());
     const requestForToken = {
