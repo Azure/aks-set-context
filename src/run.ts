@@ -58,7 +58,7 @@ export async function getKubeconfig(
     creds["resourceManagerEndpointUrl"] || "https://management.azure.com/";
   const azureSessionToken = await getAzureAccessToken(JSON.stringify(creds));
 
-  return await getAKSKubeconfig(
+  return await getAksKubeconfig(
     azureSessionToken,
     subscriptionId,
     managementEndpointUrl,
@@ -67,7 +67,7 @@ export async function getKubeconfig(
   );
 }
 
-export function getAKSKubeconfig(
+export function getAksKubeconfig(
   azureSessionToken: string,
   subscriptionId: string,
   managementEndpointUrl: string,

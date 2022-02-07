@@ -21,7 +21,7 @@ describe("Testing all functions in login file.", () => {
     jest.spyOn(azureActionsUtil, "sendRequest").mockResolvedValue(response);
 
     expect(
-      await login.getAKSKubeconfig(
+      await login.getAksKubeconfig(
         "<access_token>",
         "<subscription id>",
         "https://management.azure.com/",
@@ -51,7 +51,7 @@ describe("Testing all functions in login file.", () => {
     jest.spyOn(azureActionsUtil, "sendRequest").mockResolvedValue(response);
 
     await login
-      .getAKSKubeconfig(
+      .getAksKubeconfig(
         "<access_token>",
         "<subscription id>",
         "https://management.azure.com/",
@@ -78,7 +78,7 @@ describe("Testing all functions in login file.", () => {
       .mockRejectedValue("ErrorMessage");
 
     await login
-      .getAKSKubeconfig(
+      .getAksKubeconfig(
         "<access_token>",
         "<subscription id>",
         "https://management.azure.com/",
