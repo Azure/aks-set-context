@@ -5,11 +5,9 @@ inputs:
   resource-group:
     description: "Resource Group Name"
     required: true
-    default: ""
   cluster-name:
     description: "AKS Cluster Name"
     required: true
-    default: ""
 branding:
   color: "green"
 runs:
