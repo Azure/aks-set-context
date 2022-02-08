@@ -1,21 +1,15 @@
 name: "Azure Kubernetes set context"
-description: "Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster. Github.com/Azure/Actions"
+description: "Sets the kubeconfig on the machine to communicate with the Azure Kubernetes cluster."
+# Azure/login must be run before this action
 inputs:
-  creds:
-    description: "Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`"
-    required: true
   resource-group:
     description: "Resource Group Name"
     required: true
   cluster-name:
     description: "AKS Cluster Name"
     required: true
-  subscription-id:
-    description: "Subscription ID"
-    required: false
-    default: ""
 branding:
-  color: "green" # optional, decorates the entry in the GitHub Marketplace
+  color: "green"
 runs:
   using: "node12"
   main: "lib/run.js"

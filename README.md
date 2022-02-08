@@ -1,8 +1,8 @@
 # Azure Kubernetes Service set context
 
-This action can be used to set cluster context before other actions like [`azure/k8s-deploy`](https://github.com/Azure/k8s-deploy/tree/master), [`azure/k8s-create-secret`](https://github.com/Azure/k8s-create-secret/tree/master) or any kubectl commands (in script) can be run subsequently in the workflow.
+This action can be used to set cluster context before other actions like [`azure/k8s-deploy`](https://github.com/Azure/k8s-deploy/tree/master) and [`azure/k8s-create-secret`](https://github.com/Azure/k8s-create-secret/tree/master). Any kubectl commands (in script) can also be run subsequently in the workflow.
 
-Refer to [starter templates](https://github.com/Azure/actions-workflow-samples/tree/master/Kubernetes) to deploy to any Kubernetes cluster on-premise or any cloud including Azure Kubernetes service.
+You must run [Azure/login](https://github.com/Azure/login) before this action.
 
 ## Action inputs
 
@@ -15,62 +15,48 @@ Refer to [starter templates](https://github.com/Azure/actions-workflow-samples/t
   </thead>
 
   <tr>
-    <td><code>creds</code><br/>Credentials</td>
-    <td>(Required) Credentials required to authenticate with Azure. Steps to obtain these credentials are provided below</td>
+    <td><code>resource-group</code><br/>(Required)</td>
+    <td>Resource group containing the AKS cluster</td>
   </tr>
   <tr>
-    <td><code>resource-group</code><br/>Resource group</td>
-    <td>(Required) Resource group containing the AKS cluster</td>
-  </tr>
-  <tr>
-    <td><code>cluster-name</code><br/>Cluster name</td>
-    <td>(Required) Name of the AKS cluster</td>
+    <td><code>cluster-name</code><br/>(Required)</td>
+    <td>Name of the AKS cluster</td>
   </tr>
 </table>
 
 ## Example
 
+### OIDC Authentication (recommended)
+
 ```yaml
-uses: azure/aks-set-context@v1
-    with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}' # Azure credentials
-        resource-group: '<resource group name>'
-        cluster-name: '<cluster name>'
-    id: login
+- uses: azure/login@v1
+  with:
+    client-id: ${{ secrets.AZURE_CLIENT_ID }}
+    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+- uses: azure/aks-set-context@v2.0
+  with:
+    resource-group: "<resource group name>"
+    cluster-name: "<cluster name>"
 ```
 
-To fetch the credentials required to authenticate with Azure, run the following command:
+### Service Principal Authentication
 
-```sh
-az ad sp create-for-rbac --sdk-auth
+```yaml
+- uses: azure/login@v1
+  with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+- uses: azure/aks-set-context@v2.0
+  with:
+    resource-group: "<resource group name>"
+    cluster-name: "<cluster name>"
 ```
-
-For more details on this command, refer to [service principal documentation](https://docs.microsoft.com/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create-for-rbac)
-
-This generates a service principal and the output of the above command will be in the following format:
-
-```json
-{
-  "clientId": "<client id>",
-  "clientSecret": "<client secret>",
-  "subscriptionId": "<subscription id>",
-  "tenantId": "<tenant id>",
-  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
-  "resourceManagerEndpointUrl": "https://management.azure.com/",
-  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
-  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
-  "galleryEndpointUrl": "https://gallery.azure.com/",
-  "managementEndpointUrl": "https://management.core.windows.net/"
-}
-```
-
-Add the json output as [a secret](https://developer.github.com/actions/managing-workflows/storing-secrets/) (let's say with the name `AZURE_CREDENTIALS`) in the GitHub repository. The example YAML snippet given above showcases how this secret is referenced in the action for specifying the credentials as input to the action.
-
-aks-set-context GitHub Actions is supported for the Azure public cloud as well as Azure government clouds ('AzureUSGovernment' or 'AzureChinaCloud'). Before running this action, login to the respective Azure Cloud  using [Azure Login](https://github.com/Azure/login) by setting appropriate value for the `environment` parameter.
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
