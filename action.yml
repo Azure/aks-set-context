@@ -12,4 +12,4 @@ branding:
   color: "green"
 runs:
   using: "node12"
-  main: "lib/run.js"
+  main: "lib/index.js"

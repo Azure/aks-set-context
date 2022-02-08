@@ -25,20 +25,17 @@ export async function run() {
     `kubeconfig_${Date.now()}`
   );
   core.debug(`Writing kubeconfig to ${kubeconfigPath}`);
-  await exec.exec(
-    AZ_TOOL_NAME,
-    [
-      "aks",
-      "get-credentials",
-      "--resource-group",
-      resourceGroupName,
-      "--name",
-      clusterName,
-      "-f",
-      kubeconfigPath,
-    ],
-    { failOnStdErr: true }
-  );
+  const exitCode = await exec.exec(AZ_TOOL_NAME, [
+    "aks",
+    "get-credentials",
+    "--resource-group",
+    resourceGroupName,
+    "--name",
+    clusterName,
+    "-f",
+    kubeconfigPath,
+  ]);
+  if (exitCode !== 0) throw Error("Az cli exited with error code " + exitCode);
   fs.chmodSync(kubeconfigPath, "600");
 
   // export variable
