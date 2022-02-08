@@ -45,20 +45,16 @@ describe("Set context", () => {
 
     await expect(run()).resolves.not.toThrowError();
     const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`;
-    expect(exec.exec).toBeCalledWith(
-      "az",
-      [
-        "aks",
-        "get-credentials",
-        "--resource-group",
-        resourceGroup,
-        "--name",
-        clusterName,
-        "-f",
-        kubeconfigPath,
-      ],
-      { failOnStdErr: true }
-    );
+    expect(exec.exec).toBeCalledWith("az", [
+      "aks",
+      "get-credentials",
+      "--resource-group",
+      resourceGroup,
+      "--name",
+      clusterName,
+      "-f",
+      kubeconfigPath,
+    ]);
     expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
     expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
   });
