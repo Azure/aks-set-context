@@ -8,6 +8,13 @@ inputs:
   cluster-name:
     description: "AKS Cluster Name"
     required: true
+  subscription:
+    description: "AKS Cluster Subscription"
+    required: false
+  admin:
+    description: "Get cluster admin credentials. Values: true or false"
+    default: false
+    required: false
 branding:
   color: "green"
 runs:

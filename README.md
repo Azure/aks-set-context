@@ -22,6 +22,14 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
     <td><code>cluster-name</code><br/>(Required)</td>
     <td>Name of the AKS cluster</td>
   </tr>
+  <tr>
+    <td><code>subscription</code></td>
+    <td>Subscription tied to AKS cluster</td>
+  </tr>
+  <tr>
+    <td><code>admin</code></td>
+    <td>Get cluster admin credentials. Values: true or false</td>
+  </tr>
 </table>
 
 ## Example
