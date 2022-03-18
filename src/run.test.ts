@@ -6,6 +6,7 @@ import * as fs from "fs";
 
 const resourceGroup = "sample-rg";
 const clusterName = "sample-cluster";
+const subscription = "subscription-example";
 const azPath = "path";
 const runnerTemp = "temp";
 const date = 1644272184664;
@@ -54,6 +55,69 @@ describe("Set context", () => {
       clusterName,
       "-f",
       kubeconfigPath,
+    ]);
+    expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
+    expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
+  });
+
+  it("gets the kubeconfig and sets the context with subscription", async () => {
+    jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
+      if (inputName == "resource-group") return resourceGroup;
+      if (inputName == "cluster-name") return clusterName;
+      if (inputName == "subscription") return subscription;
+    });
+    jest.spyOn(io, "which").mockImplementation(async () => azPath);
+    process.env["RUNNER_TEMP"] = runnerTemp;
+    jest.spyOn(Date, "now").mockImplementation(() => date);
+    jest.spyOn(exec, "exec").mockImplementation(async () => 0);
+    jest.spyOn(fs, "chmodSync").mockImplementation();
+    jest.spyOn(core, "exportVariable").mockImplementation();
+    jest.spyOn(core, "debug").mockImplementation();
+
+    await expect(run()).resolves.not.toThrowError();
+    const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`;
+    expect(exec.exec).toBeCalledWith("az", [
+      "aks",
+      "get-credentials",
+      "--resource-group",
+      resourceGroup,
+      "--name",
+      clusterName,
+      "-f",
+      kubeconfigPath,
+      "--subscription",
+      subscription,
+    ]);
+    expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
+    expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
+  });
+
+  it("gets the kubeconfig and sets the context with admin", async () => {
+    jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
+      if (inputName == "resource-group") return resourceGroup;
+      if (inputName == "cluster-name") return clusterName;
+      if (inputName == "admin") return "true";
+    });
+    jest.spyOn(io, "which").mockImplementation(async () => azPath);
+    process.env["RUNNER_TEMP"] = runnerTemp;
+    jest.spyOn(Date, "now").mockImplementation(() => date);
+    jest.spyOn(exec, "exec").mockImplementation(async () => 0);
+    jest.spyOn(fs, "chmodSync").mockImplementation();
+    jest.spyOn(core, "exportVariable").mockImplementation();
+    jest.spyOn(core, "debug").mockImplementation();
+
+    await expect(run()).resolves.not.toThrowError();
+    const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`;
+    expect(exec.exec).toBeCalledWith("az", [
+      "aks",
+      "get-credentials",
+      "--resource-group",
+      resourceGroup,
+      "--name",
+      clusterName,
+      "-f",
+      kubeconfigPath,
+      "--admin",
     ]);
     expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
     expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
