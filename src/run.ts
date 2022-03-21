@@ -10,6 +10,9 @@ export async function run() {
   // get inputs
   const resourceGroupName = core.getInput("resource-group", { required: true });
   const clusterName = core.getInput("cluster-name", { required: true });
+  const subscription = core.getInput("subscription") || "";
+  const adminInput = core.getInput("admin") || "";
+  const admin = adminInput.toLowerCase() === "true";
 
   // check az tools
   const azPath = await io.which(AZ_TOOL_NAME, false);
@@ -25,7 +28,7 @@ export async function run() {
     `kubeconfig_${Date.now()}`
   );
   core.debug(`Writing kubeconfig to ${kubeconfigPath}`);
-  const exitCode = await exec.exec(AZ_TOOL_NAME, [
+  const cmd = [
     "aks",
     "get-credentials",
     "--resource-group",
@@ -34,7 +37,11 @@ export async function run() {
     clusterName,
     "-f",
     kubeconfigPath,
-  ]);
+  ];
+  if (subscription) cmd.push("--subscription", subscription);
+  if (admin) cmd.push("--admin");
+
+  const exitCode = await exec.exec(AZ_TOOL_NAME, cmd);
   if (exitCode !== 0) throw Error("Az cli exited with error code " + exitCode);
   fs.chmodSync(kubeconfigPath, "600");
 
