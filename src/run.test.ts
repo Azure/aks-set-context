@@ -10,7 +10,7 @@ const subscription = "subscription-example";
 const azPath = "path";
 const runnerTemp = "temp";
 const date = 1644272184664;
-const nonAdminUser = false
+const nonAdminUser = "false"
 
 describe("Set context", () => {
   it("throws without resource-group", async () => {
