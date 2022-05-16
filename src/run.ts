@@ -54,7 +54,7 @@ export async function run() {
     ]
 
     const exitCode2 = await exec.exec(KUBELOGIN_TOOL_NAME, nonAdminCmd);
-    if (exitCode2 !== 0) throw Error("kubelogin exited with error code "+ exitCode);
+    if (exitCode2 !== 0) throw Error("kubelogin exited with error code " + exitCode);
   }
  
   fs.chmodSync(kubeconfigPath, "600");

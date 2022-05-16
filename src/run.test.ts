@@ -10,6 +10,7 @@ const subscription = "subscription-example";
 const azPath = "path";
 const runnerTemp = "temp";
 const date = 1644272184664;
+const nonAdminUser = false
 
 describe("Set context", () => {
   it("throws without resource-group", async () => {
@@ -35,6 +36,7 @@ describe("Set context", () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
       if (inputName == "resource-group") return resourceGroup;
       if (inputName == "cluster-name") return clusterName;
+      if (inputName == "non-admin-user") return nonAdminUser;
     });
     jest.spyOn(io, "which").mockImplementation(async () => azPath);
     process.env["RUNNER_TEMP"] = runnerTemp;
