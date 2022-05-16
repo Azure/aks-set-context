@@ -90,11 +90,11 @@ describe("Set context", () => {
       "-f",
       kubeconfigPath,
     ]);
-    expect(exec.exec).toBeCalledWith("kubelogin", [
-      "convert-kubeconfig",
-      "-l",
-      "azurecli",
-    ])
+    // expect(exec.exec).toBeCalledWith("kubelogin", [
+    //   "convert-kubeconfig",
+    //   "-l",
+    //   "azurecli",
+    // ])
     expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
     expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
   });
