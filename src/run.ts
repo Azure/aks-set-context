@@ -39,8 +39,6 @@ export async function run() {
     clusterName,
     "-f",
     kubeconfigPath,
-    "--non-admin-user",
-    nonAdminUser,
   ];
   if (subscription) cmd.push("--subscription", subscription);
   if (admin) cmd.push("--admin");
@@ -48,8 +46,16 @@ export async function run() {
   const exitCode = await exec.exec(AZ_TOOL_NAME, cmd);
   if (exitCode !== 0) throw Error("az cli exited with error code " + exitCode);
 
-  const exitCode2 = await exec.exec(KUBELOGIN_TOOL_NAME, "convert-kubeconfig -l azurecli");
-  if (exitCode2 !== 0) throw Error("kubelogin exited with error code "+ exitCode);
+  if (nonAdminUser) {
+    const nonAdminCmd = [
+      "convert-kubeconfig",
+      "-l",
+      "azurecli",
+    ]
+
+    const exitCode2 = await exec.exec(KUBELOGIN_TOOL_NAME, nonAdminCmd);
+    if (exitCode2 !== 0) throw Error("kubelogin exited with error code "+ exitCode);
+  }
  
   fs.chmodSync(kubeconfigPath, "600");
 
