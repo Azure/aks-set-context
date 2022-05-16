@@ -48,7 +48,9 @@ export async function run() {
 
   if (nonAdminUser) {
     const nonAdminCmd = [
-      
+      "convert-kubeconfig",
+      "-l",
+      "azurecli",
     ]
 
     const exitCode2 = await exec.exec(KUBELOGIN_TOOL_NAME, nonAdminCmd);
