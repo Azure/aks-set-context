@@ -5,6 +5,7 @@ import * as path from "path";
 import * as fs from "fs";
 
 const AZ_TOOL_NAME = "az";
+const KUBELOGIN_TOOL_NAME = "kubelogin";
 
 export async function run() {
   // get inputs
@@ -13,6 +14,7 @@ export async function run() {
   const subscription = core.getInput("subscription") || "";
   const adminInput = core.getInput("admin") || "";
   const admin = adminInput.toLowerCase() === "true";
+  const nonAdminUser = !(core.getInput("non-admin-user").toLowerCase() === "true");
 
   // check az tools
   const azPath = await io.which(AZ_TOOL_NAME, false);
@@ -37,12 +39,18 @@ export async function run() {
     clusterName,
     "-f",
     kubeconfigPath,
+    "--non-admin-user",
+    nonAdminUser,
   ];
   if (subscription) cmd.push("--subscription", subscription);
   if (admin) cmd.push("--admin");
 
   const exitCode = await exec.exec(AZ_TOOL_NAME, cmd);
-  if (exitCode !== 0) throw Error("Az cli exited with error code " + exitCode);
+  if (exitCode !== 0) throw Error("az cli exited with error code " + exitCode);
+
+  const exitCode2 = await exec.exec(KUBELOGIN_TOOL_NAME, "convert-kubeconfig -l azurecli");
+  if (exitCode2 !== 0) throw Error("kubelogin exited with error code "+ exitCode);
+ 
   fs.chmodSync(kubeconfigPath, "600");
 
   // export variable
