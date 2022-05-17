@@ -14,7 +14,7 @@ export async function run() {
   const subscription = core.getInput("subscription") || "";
   const adminInput = core.getInput("admin") || "";
   const admin = adminInput.toLowerCase() === "true";
-  const nonAdminUser = !(core.getInput("non-admin-user").toLowerCase() === "true");
+  const nonAdminUser = !!(core.getInput("non-admin-user").toLowerCase() === "true");
 
   // check az tools
   const azPath = await io.which(AZ_TOOL_NAME, false);
