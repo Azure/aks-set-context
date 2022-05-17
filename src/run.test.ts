@@ -75,8 +75,6 @@ describe("Set context", () => {
     jest.spyOn(core, "exportVariable").mockImplementation();
     jest.spyOn(core, "debug").mockImplementation();
 
-    await expect(run()).resolves.not.toThrowError();
-    const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`;
     expect(exec.exec).toHaveBeenNthCalledWith(1, "az", [
       "aks",
       "get-credentials",
@@ -92,6 +90,8 @@ describe("Set context", () => {
       "-l",
       "azurecli",
     ])
+    await expect(run()).resolves.not.toThrowError();
+    const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`;
     expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
     expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
   });
