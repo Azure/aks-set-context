@@ -70,7 +70,7 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 
 `kubelogin` is at the core of the non-admin user scenario.  For more information on `kubelogin`, refer to the documentation [here](https://github.com/Azure/kubelogin).
 
-To set up `kubelogin`, you may use the following:
+To run this Action as a non-admin user, you must first install `kubelogin`.  To set up `kubelogin`, you may use the following:
 ```yaml
 - name: Set up kubelogin for non-interactive login
         run: |
