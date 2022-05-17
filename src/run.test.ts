@@ -19,7 +19,6 @@ describe("Set context", () => {
   it("throws without cluster-name", async () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
       if (inputName == "resource-group") return resourceGroup;
-      if (inputName == "use-kubelogin") return "false";
     });
     await expect(run()).rejects.toThrow();
   }, 17500);
@@ -28,7 +27,6 @@ describe("Set context", () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
       if (inputName == "resource-group") return resourceGroup;
       if (inputName == "cluster-name") return clusterName;
-      if (inputName == "use-kubelogin") return "false";
     });
     await expect(run()).rejects.toThrow();
   }, 17500);
