@@ -79,7 +79,7 @@ describe("Set context", () => {
 
     await expect(run()).resolves.not.toThrowError();
     const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`;
-    expect(exec.exec).toBeCalledWith("az", [
+    expect(exec.exec).toHaveBeenNthCalledWith(1, "az", [
       "aks",
       "get-credentials",
       "--resource-group",
@@ -89,7 +89,7 @@ describe("Set context", () => {
       "-f",
       kubeconfigPath,
     ]);
-    expect(exec.exec).toBeCalledWith("kubelogin", [
+    expect(exec.exec).toHaveBeenNthCalledWith(2, "kubelogin", [
       "convert-kubeconfig",
       "-l",
       "azurecli",
