@@ -65,7 +65,6 @@ describe("Set context", () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
       if (inputName == "resource-group") return resourceGroup;
       if (inputName == "cluster-name") return clusterName;
-      if (inputName == "subscription") return subscription;
       if (inputName == "non-admin-user") return "true";
       if (inputName == "admin") return "false";
       if (inputName == "adminInput") return "";
@@ -90,11 +89,11 @@ describe("Set context", () => {
       "-f",
       kubeconfigPath,
     ]);
-    // expect(exec.exec).toBeCalledWith("kubelogin", [
-    //   "convert-kubeconfig",
-    //   "-l",
-    //   "azurecli",
-    // ])
+    expect(exec.exec).toBeCalledWith("kubelogin", [
+      "convert-kubeconfig",
+      "-l",
+      "azurecli",
+    ])
     expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, "600");
     expect(core.exportVariable).toBeCalledWith("KUBECONFIG", kubeconfigPath);
   });
