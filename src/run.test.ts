@@ -22,7 +22,7 @@ describe("Set context", () => {
       if (inputName == "use-kubelogin") return "false";
     });
     await expect(run()).rejects.toThrow();
-  });
+  }, 1000);
 
   it("throws without az tools", async () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
@@ -31,7 +31,7 @@ describe("Set context", () => {
       if (inputName == "use-kubelogin") return "false";
     });
     await expect(run()).rejects.toThrow();
-  });
+  }, 1000);
 
   it("gets the kubeconfig and sets the context", async () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
