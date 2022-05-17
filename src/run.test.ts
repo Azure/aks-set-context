@@ -21,7 +21,7 @@ describe("Set context", () => {
       if (inputName == "resource-group") return resourceGroup;
     });
     await expect(run()).rejects.toThrow();
-  }, 10000);
+  });
 
   it("throws without az tools", async () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
@@ -29,7 +29,7 @@ describe("Set context", () => {
       if (inputName == "cluster-name") return clusterName;
     });
     await expect(run()).rejects.toThrow();
-  }, 10000);
+  });
 
   it("gets the kubeconfig and sets the context", async () => {
     jest.spyOn(core, "getInput").mockImplementation((inputName, options) => {
