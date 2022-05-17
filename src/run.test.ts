@@ -66,8 +66,6 @@ describe("Set context", () => {
       if (inputName == "resource-group") return resourceGroup;
       if (inputName == "cluster-name") return clusterName;
       if (inputName == "non-admin-user") return "true";
-      if (inputName == "admin") return "false";
-      if (inputName == "adminInput") return "";
     });
     jest.spyOn(io, "which").mockImplementation(async () => azPath);
     process.env["RUNNER_TEMP"] = runnerTemp;
