@@ -14,6 +14,8 @@ export async function run() {
   const subscription = core.getInput("subscription") || "";
   const adminInput = core.getInput("admin") || "";
   const admin = adminInput.toLowerCase() === "true";
+  const useKubeLoginInput = core.getInput("use-kubelogin") || "";
+  const useKubeLogin = useKubeLoginInput.toLowerCase() === "true" && !admin;
 
   // check az tools
   const azPath = await io.which(AZ_TOOL_NAME, false);
@@ -45,7 +47,7 @@ export async function run() {
   const exitCode = await exec.exec(AZ_TOOL_NAME, cmd);
   if (exitCode !== 0) throw Error("az cli exited with error code " + exitCode);
 
-  if (!admin) {
+  if (useKubeLogin) {
     const nonAdminCmd = [
       "convert-kubeconfig",
       "-l",

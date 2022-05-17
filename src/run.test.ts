@@ -65,6 +65,7 @@ describe("Set context", () => {
       if (inputName == "resource-group") return resourceGroup;
       if (inputName == "cluster-name") return clusterName;
       if (inputName == "admin") return "false";
+      if (inputName == "use-kubelogin") return "true";
     });
     jest.spyOn(io, "which").mockImplementation(async () => azPath);
     process.env["RUNNER_TEMP"] = runnerTemp;

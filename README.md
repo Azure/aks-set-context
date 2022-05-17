@@ -30,6 +30,10 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
     <td><code>admin</code></td>
     <td>Get cluster admin credentials. Values: true or false</td>
   </tr>
+  <tr>
+    <td><code>use-kubelogin</code></td>
+    <td>Allows non-admin users to use the Action via kubelogin</td>
+  </tr>
 </table>
 
 ## Example
@@ -61,6 +65,35 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
     resource-group: "<resource group name>"
     cluster-name: "<cluster name>"
 ```
+
+### Non Admin User Example
+
+If you are executing this Action as a non-admin user, you need to toggle the optional `use-kubelogin` Action input to `true` for it to work.
+```yaml
+- uses: azure/login@v1
+  with:
+    client-id: ${{ secrets.AZURE_CLIENT_ID }}
+    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+- uses: azure/aks-set-context@v2.0
+  with:
+    resource-group: "<resource group name>"
+    cluster-name: "<cluster name>"
+    use-kubelogin: "true"
+```
+```yaml
+- uses: azure/login@v1
+  with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+- uses: azure/aks-set-context@v2.0
+  with:
+    resource-group: "<resource group name>"
+    cluster-name: "<cluster name>"
+    use-kubelogin: "true"
+```
+
 
 ## Contributing
 
