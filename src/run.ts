@@ -48,14 +48,14 @@ export async function run() {
   if (exitCode !== 0) throw Error("az cli exited with error code " + exitCode);
 
   if (useKubeLogin) {
-    const nonAdminCmd = [
+    const kubeloginCmd = [
       "convert-kubeconfig",
       "-l",
       "azurecli",
     ]
 
-    const exitCode2 = await exec.exec(KUBELOGIN_TOOL_NAME, nonAdminCmd);
-    if (exitCode2 !== 0) throw Error("kubelogin exited with error code " + exitCode);
+    const kubeloginExitCode = await exec.exec(KUBELOGIN_TOOL_NAME, kubeloginCmd);
+    if (kubeloginExitCode !== 0) throw Error("kubelogin exited with error code " + exitCode);
   }
  
   fs.chmodSync(kubeconfigPath, "600");
