@@ -95,6 +95,7 @@ If you are executing this Action as a non-admin user, you need to toggle the opt
   with:
     resource-group: "<resource group name>"
     cluster-name: "<cluster name>"
+    admin: "false"
     use-kubelogin: "true"
 ```
 ```yaml
@@ -106,6 +107,7 @@ If you are executing this Action as a non-admin user, you need to toggle the opt
   with:
     resource-group: "<resource group name>"
     cluster-name: "<cluster name>"
+    admin: "false"
     use-kubelogin: "true"
 ```
 
