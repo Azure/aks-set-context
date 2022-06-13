@@ -47,6 +47,12 @@ export async function run() {
   const exitCode = await exec.exec(AZ_TOOL_NAME, cmd);
   if (exitCode !== 0) throw Error("az cli exited with error code " + exitCode);
 
+  fs.chmodSync(kubeconfigPath, "600");
+
+  // export variable
+  core.exportVariable("KUBECONFIG", kubeconfigPath);
+  core.debug("KUBECONFIG environment variable set");
+
   if (useKubeLogin) {
     const kubeloginCmd = [
       "convert-kubeconfig",
@@ -57,12 +63,6 @@ export async function run() {
     const kubeloginExitCode = await exec.exec(KUBELOGIN_TOOL_NAME, kubeloginCmd);
     if (kubeloginExitCode !== 0) throw Error("kubelogin exited with error code " + exitCode);
   }
- 
-  fs.chmodSync(kubeconfigPath, "600");
-
-  // export variable
-  core.exportVariable("KUBECONFIG", kubeconfigPath);
-  core.debug("KUBECONFIG environment variable set");
 }
 
 run().catch(core.setFailed);
