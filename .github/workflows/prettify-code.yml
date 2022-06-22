@@ -1,0 +1,22 @@
+name: "Run prettier"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+    branches:
+      - main
+      - "releases/*"
+  push:
+    branches:
+      - main
+      - "releases/*"
+
+jobs:
+  build: # make sure build/ci works properly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      - name: Prettify code
+        uses: actionsx/prettier@v2
+        run: |
+          npx prettier --check 'src/*'
