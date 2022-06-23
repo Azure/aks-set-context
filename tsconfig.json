@@ -1,9 +1,9 @@
 {
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./lib"
-  },
-  "exclude": ["node_modules", "tests", "**/*.test.ts"]
+   "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",
+      "rootDir": "./src",
+      "outDir": "./lib"
+   },
+   "exclude": ["node_modules", "tests", "**/*.test.ts"]
 }
