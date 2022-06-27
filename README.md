@@ -43,14 +43,14 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 ```yaml
 - uses: azure/login@v1
   with:
-    client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
 ```
 
 ### Service Principal Authentication
@@ -58,41 +58,60 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 ```yaml
 - uses: azure/login@v1
   with:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
+     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
+```
+
+### Kubelogin
+
+`kubelogin` is at the core of the non-admin user scenario. For more information on `kubelogin`, refer to the documentation [here](https://github.com/Azure/kubelogin).
+
+To run this Action as a non-admin user, you must first install `kubelogin`. To set up `kubelogin`, you may use the following:
+
+```yaml
+- name: Set up kubelogin for non-interactive login
+        run: |
+          curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
+          sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
+          rm -f kubelogin-linux-amd64.zip
+          kubelogin --version
 ```
 
 ### Non-Admin User Example
 
-If you are executing this Action as a non-admin user, you need to toggle the optional `use-kubelogin` Action input to `true` for it to work. To run this Action as a non-admin user, you must also install `kubelogin` before running this action.
+If you are executing this Action as a non-admin user, you need to toggle the optional `use-kubelogin` Action input to `true` for it to work.
 
 ```yaml
-- uses: azure/login@v1 # you can also use the Service Principal with secrets strategy
+- uses: azure/login@v1
   with:
-    client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    
-- name: Set up kubelogin
-  run: |
-    curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
-    sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
-    rm -f kubelogin-linux-amd64.zip
-    kubelogin --version
-          
+     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
-    admin: "false"
-    use-kubelogin: "true"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
+     admin: 'false'
+     use-kubelogin: 'true'
 ```
 
-`kubelogin` is at the core of the non-admin user scenario.  For more information on `kubelogin`, refer to the documentation [here](https://github.com/Azure/kubelogin).
+```yaml
+- uses: azure/login@v1
+  with:
+     creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+- uses: azure/aks-set-context@v2
+  with:
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
+     admin: 'false'
+     use-kubelogin: 'true'
+```
 
 ## Contributing
 
