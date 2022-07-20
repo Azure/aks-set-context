@@ -92,7 +92,7 @@ export async function run() {
 
 function getUserAgent(prevUserAgent: string): string {
    const actionName = process.env.GITHUB_ACTION_REPOSITORY || ACTION_NAME
-   const runRepo = process.env.GITHUB_REPOSITORY
+   const runRepo = process.env.GITHUB_REPOSITORY || ''
    const runRepoHash = crypto.createHash('sha256').update(runRepo).digest('hex')
    const runId = process.env.GITHUB_RUN_ID
    const newUserAgent = `GitHubActions/${actionName}(${runRepoHash}; ${runId})`
