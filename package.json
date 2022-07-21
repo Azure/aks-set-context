@@ -20,15 +20,16 @@
    "dependencies": {
       "@actions/core": "^1.2.6",
       "@actions/exec": "^1.1.0",
-      "@actions/io": "^1.1.1"
+      "@actions/io": "^1.1.1",
+      "crypto": "^1.0.1"
    },
    "devDependencies": {
       "@types/jest": "^25.2.2",
       "@types/node": "^12.0.4",
       "@vercel/ncc": "^0.34.0",
-      "jest": "^25.5.4",
+      "jest": "^26.0.0",
       "prettier": "2.7.1",
-      "ts-jest": "^25.5.1",
+      "ts-jest": "^26.0.0",
       "typescript": "3.9.2"
    }
 }
