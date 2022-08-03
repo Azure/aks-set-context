@@ -47,7 +47,7 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-- uses: azure/aks-set-context@v2
+- uses: azure/aks-set-context@v3
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
@@ -60,7 +60,7 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
   with:
      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-- uses: azure/aks-set-context@v2
+- uses: azure/aks-set-context@v3
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
@@ -92,7 +92,7 @@ If you are executing this Action as a non-admin user, you need to toggle the opt
      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-- uses: azure/aks-set-context@v2
+- uses: azure/aks-set-context@v3
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
@@ -105,7 +105,7 @@ If you are executing this Action as a non-admin user, you need to toggle the opt
   with:
      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-- uses: azure/aks-set-context@v2
+- uses: azure/aks-set-context@v3
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
