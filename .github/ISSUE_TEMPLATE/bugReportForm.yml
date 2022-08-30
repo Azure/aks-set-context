@@ -16,9 +16,9 @@ body:
      id: Version
      attributes:
         label: Version
-        options:
-           - label: I am using the latest version
-             required: true
+     options:
+        label: I am using the latest version
+        required: true
    - type: input
      id: Runner
      attributes:

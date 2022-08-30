@@ -43,14 +43,14 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 ```yaml
 - uses: azure/login@v1
   with:
-    client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
 ```
 
 ### Service Principal Authentication
@@ -58,19 +58,20 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 ```yaml
 - uses: azure/login@v1
   with:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
+     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
 ```
 
 ### Kubelogin
 
-`kubelogin` is at the core of the non-admin user scenario.  For more information on `kubelogin`, refer to the documentation [here](https://github.com/Azure/kubelogin).
+`kubelogin` is at the core of the non-admin user scenario. For more information on `kubelogin`, refer to the documentation [here](https://github.com/Azure/kubelogin).
 
-To run this Action as a non-admin user, you must first install `kubelogin`.  To set up `kubelogin`, you may use the following:
+To run this Action as a non-admin user, you must first install `kubelogin`. To set up `kubelogin`, you may use the following:
+
 ```yaml
 - name: Set up kubelogin for non-interactive login
         run: |
@@ -87,30 +88,30 @@ If you are executing this Action as a non-admin user, you need to toggle the opt
 ```yaml
 - uses: azure/login@v1
   with:
-    client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
-    admin: "false"
-    use-kubelogin: "true"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
+     admin: 'false'
+     use-kubelogin: 'true'
 ```
+
 ```yaml
 - uses: azure/login@v1
   with:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
+     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
 - uses: azure/aks-set-context@v2
   with:
-    resource-group: "<resource group name>"
-    cluster-name: "<cluster name>"
-    admin: "false"
-    use-kubelogin: "true"
+     resource-group: '<resource group name>'
+     cluster-name: '<cluster name>'
+     admin: 'false'
+     use-kubelogin: 'true'
 ```
-
 
 ## Contributing
 
