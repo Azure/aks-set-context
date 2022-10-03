@@ -71,6 +71,7 @@ export async function run() {
       // export variable
       core.exportVariable('KUBECONFIG', kubeconfigPath)
       core.debug('KUBECONFIG environment variable set')
+      core.exportVariable('KUBE_CONFIG_PATH', kubeconfigPath)
 
       if (useKubeLogin) {
          const kubeloginCmd = ['convert-kubeconfig', '-l', 'azurecli']
