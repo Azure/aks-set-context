@@ -70,16 +70,16 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 
 `kubelogin` is at the core of the non-admin user scenario. For more information on `kubelogin`, refer to the documentation [here](https://github.com/Azure/kubelogin).
 
-To run this Action as a non-admin user, you must first install `kubelogin`. To set up `kubelogin`, you may use the following:
+To run this Action as a non-admin user, you must first install `kubelogin`. To set up `kubelogin`, you may use the action [azure/use-kubelogin][action_use_kubelogin]:
 
 ```yaml
 - name: Set up kubelogin for non-interactive login
-        run: |
-          curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
-          sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
-          rm -f kubelogin-linux-amd64.zip
-          kubelogin --version
+  uses: azure/use-kubelogin@v1
+  with:
+     kubelogin-version: 'v0.0.24'
 ```
+
+[action_use_kubelogin]: https://github.com/marketplace/actions/setup-kubelogin
 
 ### Non-Admin User Example
 
