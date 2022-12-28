@@ -4,6 +4,7 @@ import * as exec from '@actions/exec'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
+import * as stateHelper from './state-helper'
 
 const AZ_TOOL_NAME = 'az'
 const KUBELOGIN_TOOL_NAME = 'kubelogin'
@@ -66,6 +67,8 @@ export async function run() {
       if (exitCode !== 0)
          throw Error('az cli exited with error code ' + exitCode)
 
+      stateHelper.setKubeConfigPath(kubeconfigPath)
+
       fs.chmodSync(kubeconfigPath, '600')
 
       // export variable
@@ -102,4 +105,21 @@ function getUserAgent(prevUserAgent: string): string {
    return newUserAgent
 }
 
-run().catch(core.setFailed)
+async function cleanup(): Promise<void> {
+   if (core.getBooleanInput('cleanup')) {
+      try {
+         await io.rmRF(stateHelper.KubeConfigPath)
+      } catch (error) {
+         core.warning(`${(error as any)?.message ?? error}`)
+      }
+   }
+}
+
+// Main
+if (!stateHelper.IsPost) {
+   run().catch(core.setFailed)
+}
+// Post
+else {
+   cleanup()
+}
