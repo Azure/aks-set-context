@@ -4,13 +4,13 @@ import * as exec from '@actions/exec'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
-import * as stateHelper from './state-helper'
 
 const AZ_TOOL_NAME = 'az'
 const KUBELOGIN_TOOL_NAME = 'kubelogin'
 const ACTION_NAME = 'Azure/aks-set-context'
 const AZ_USER_AGENT_ENV = 'AZURE_HTTP_USER_AGENT'
 const AZ_USER_AGENT_ENV_PS = 'AZUREPS_HOST_ENVIRONMENT'
+const IsPost = !!core.getState('isPost')
 
 export async function run() {
    const originalAzUserAgent = process.env[AZ_USER_AGENT_ENV] || ''
@@ -67,14 +67,14 @@ export async function run() {
       if (exitCode !== 0)
          throw Error('az cli exited with error code ' + exitCode)
 
-      stateHelper.setKubeConfigPath(kubeconfigPath)
-
       fs.chmodSync(kubeconfigPath, '600')
 
       // export variable
       core.exportVariable('KUBECONFIG', kubeconfigPath)
       core.debug('KUBECONFIG environment variable set')
       core.exportVariable('KUBE_CONFIG_PATH', kubeconfigPath)
+      core.saveState('isPost', 'true')
+      core.saveState('KUBE_CONFIG_PATH', kubeconfigPath)
 
       if (useKubeLogin) {
          const kubeloginCmd = ['convert-kubeconfig', '-l', 'azurecli']
@@ -108,7 +108,7 @@ function getUserAgent(prevUserAgent: string): string {
 async function cleanup(): Promise<void> {
    if (core.getBooleanInput('cleanup')) {
       try {
-         await io.rmRF(stateHelper.KubeConfigPath)
+         await io.rmRF(core.getState('KUBE_CONFIG_PATH'))
       } catch (error) {
          core.warning(`${(error as any)?.message ?? error}`)
       }
@@ -116,7 +116,7 @@ async function cleanup(): Promise<void> {
 }
 
 // Main
-if (!stateHelper.IsPost) {
+if (!IsPost) {
    run().catch(core.setFailed)
 }
 // Post
