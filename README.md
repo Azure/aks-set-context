@@ -34,6 +34,10 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
     <td><code>use-kubelogin</code></td>
     <td>Allows non-admin users to use the Action via kubelogin</td>
   </tr>
+  <tr>
+    <td><code>cleanup</code></td>
+    <td>Remove generated kube config on post run. Default is 'true'</td>
+  </tr>
 </table>
 
 ## Example

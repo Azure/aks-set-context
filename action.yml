@@ -19,8 +19,13 @@ inputs:
       description: 'Enables kubelogin for non-admin user scenario. Values: true or false'
       default: false
       required: false
+   cleanup:
+      description: 'Remove generated kube config on post run'
+      default: 'true'
+      required: false
 branding:
    color: 'green'
 runs:
    using: 'node16'
    main: 'lib/index.js'
+   post: 'lib/index.js'

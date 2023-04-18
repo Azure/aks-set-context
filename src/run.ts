@@ -10,6 +10,7 @@ const KUBELOGIN_TOOL_NAME = 'kubelogin'
 const ACTION_NAME = 'Azure/aks-set-context'
 const AZ_USER_AGENT_ENV = 'AZURE_HTTP_USER_AGENT'
 const AZ_USER_AGENT_ENV_PS = 'AZUREPS_HOST_ENVIRONMENT'
+const IsPost = !!core.getState('isPost')
 
 export async function run() {
    const originalAzUserAgent = process.env[AZ_USER_AGENT_ENV] || ''
@@ -72,6 +73,8 @@ export async function run() {
       core.exportVariable('KUBECONFIG', kubeconfigPath)
       core.debug('KUBECONFIG environment variable set')
       core.exportVariable('KUBE_CONFIG_PATH', kubeconfigPath)
+      core.saveState('isPost', 'true')
+      core.saveState('KUBE_CONFIG_PATH', kubeconfigPath)
 
       if (useKubeLogin) {
          const kubeloginCmd = ['convert-kubeconfig', '-l', 'azurecli']
@@ -102,4 +105,21 @@ function getUserAgent(prevUserAgent: string): string {
    return newUserAgent
 }
 
-run().catch(core.setFailed)
+async function cleanup(): Promise<void> {
+   if (core.getBooleanInput('cleanup')) {
+      try {
+         await io.rmRF(core.getState('KUBE_CONFIG_PATH'))
+      } catch (error) {
+         core.warning(`${(error as any)?.message ?? error}`)
+      }
+   }
+}
+
+// Main
+if (!IsPost) {
+   run().catch(core.setFailed)
+}
+// Post
+else {
+   cleanup()
+}
