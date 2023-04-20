@@ -19,6 +19,10 @@ inputs:
       description: 'Enables kubelogin for non-admin user scenario. Values: true or false'
       default: false
       required: false
+   public-fqdn:
+      description: 'Get private cluster credential with server address to be public fqdn.  Values: true or false'
+      default: false
+      required: false
 branding:
    color: 'green'
 runs:
