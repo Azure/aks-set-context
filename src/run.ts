@@ -36,7 +36,7 @@ export async function run() {
       const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
       const publicFqdnInput = core.getInput('public-fqdn') || ''
       const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
- 
+
       // check az tools
       const azPath = await io.which(AZ_TOOL_NAME, false)
       if (!azPath)

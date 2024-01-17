@@ -205,7 +205,4 @@ describe('Set context', () => {
       expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
       expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
    })
-
-
 })
-
