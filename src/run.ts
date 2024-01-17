@@ -34,7 +34,9 @@ export async function run() {
       const admin = adminInput.toLowerCase() === 'true'
       const useKubeLoginInput = core.getInput('use-kubelogin') || ''
       const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
-
+      const publicFqdnInput = core.getInput('public-fqdn') || ''
+      const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
+ 
       // check az tools
       const azPath = await io.which(AZ_TOOL_NAME, false)
       if (!azPath)
@@ -61,6 +63,7 @@ export async function run() {
       ]
       if (subscription) cmd.push('--subscription', subscription)
       if (admin) cmd.push('--admin')
+      if (publicFqdn) cmd.push('--public-fqdn')
 
       const exitCode = await exec.exec(AZ_TOOL_NAME, cmd)
       if (exitCode !== 0)

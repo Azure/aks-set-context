@@ -34,6 +34,11 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
     <td><code>use-kubelogin</code></td>
     <td>Allows non-admin users to use the Action via kubelogin</td>
   </tr>
+  <tr>
+    <td><code>public-fqdn</code></td>
+    <td>Get private cluster credential with server address to be public fqdn</td>
+  </tr>
+
 </table>
 
 ## Example
