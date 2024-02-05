@@ -25,6 +25,7 @@ describe('Set context', () => {
             .spyOn(core, 'getInput')
             .mockImplementation((inputName, options) => {
                if (inputName == 'resource-group') return resourceGroup
+               if (inputName == 'cluster-name') return ''
             })
          await expect(run()).rejects.toThrow()
       },
