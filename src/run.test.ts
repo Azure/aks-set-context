@@ -26,6 +26,7 @@ describe('Set context', () => {
             .mockImplementation((inputName, options) => {
                if (inputName == 'resource-group') return resourceGroup
                if (inputName == 'cluster-name') return ''
+	       return ''
             })
          await expect(run()).rejects.toThrow()
       },
