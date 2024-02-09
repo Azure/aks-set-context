@@ -4,7 +4,7 @@
 
 ### Changed
 
-- #109 **Breaking Change** Upgrade to node20 as node16 is deprecated, test fixes
+-  #109 **Breaking Change** Upgrade to node20 as node16 is deprecated, test fixes
 
 ## [3.3.0] - 2024-01-22
 
