@@ -1,6 +1,6 @@
 {
    "name": "aks-set-context-action",
-   "version": "3.3.0",
+   "version": "4.0.0",
    "private": true,
    "main": "lib/login.js",
    "scripts": {
