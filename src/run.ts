@@ -3,7 +3,7 @@ import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as path from 'path'
 import * as fs from 'fs'
-import * as crypto from 'crypto'
+import {createHash} from 'crypto'
 
 const AZ_TOOL_NAME = 'az'
 const KUBELOGIN_TOOL_NAME = 'kubelogin'
@@ -97,7 +97,7 @@ export async function run() {
 function getUserAgent(prevUserAgent: string): string {
    const actionName = process.env.GITHUB_ACTION_REPOSITORY || ACTION_NAME
    const runRepo = process.env.GITHUB_REPOSITORY || ''
-   const runRepoHash = crypto.createHash('sha256').update(runRepo).digest('hex')
+   const runRepoHash = createHash('sha256').update(runRepo).digest('hex')
    const runId = process.env.GITHUB_RUN_ID
    const newUserAgent = `GitHubActions/${actionName}(${runRepoHash}; ${runId})`
 
