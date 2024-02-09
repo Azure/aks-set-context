@@ -104,5 +104,3 @@ function getUserAgent(prevUserAgent: string): string {
    if (prevUserAgent) return `${prevUserAgent}+${newUserAgent}`
    return newUserAgent
 }
-
-run().catch(core.setFailed)
