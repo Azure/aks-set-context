@@ -10,8 +10,9 @@ on:
 
 jobs:
    release:
-      uses: Azure/action-release-workflows/.github/workflows/release_js_project.yaml@v1
       permissions:
+         actions: read
          contents: write
+      uses: Azure/action-release-workflows/.github/workflows/release_js_project.yaml@v1
       with:
          changelogPath: ./CHANGELOG.md
