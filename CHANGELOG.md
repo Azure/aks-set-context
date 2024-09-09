@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1] - 2024-09-06
+
+### Changed
+
+-  #117 Upgrading typescript to 5
+-  #116 Added dependabot
+
 ## [4.0.0] - 2024-02-09
 
 ### Changed
