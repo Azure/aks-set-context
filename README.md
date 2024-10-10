@@ -46,13 +46,13 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 ### OIDC Authentication (recommended)
 
 ```yaml
-- uses: azure/login@v1
+- uses: azure/login@v2
   with:
      client-id: ${{ secrets.AZURE_CLIENT_ID }}
      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-- uses: azure/aks-set-context@v3
+- uses: azure/aks-set-context@v4
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
@@ -61,11 +61,11 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
 ### Service Principal Authentication
 
 ```yaml
-- uses: azure/login@v1
+- uses: azure/login@v2
   with:
      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-- uses: azure/aks-set-context@v3
+- uses: azure/aks-set-context@v4
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
@@ -79,7 +79,7 @@ To run this Action as a non-admin user, you must first install `kubelogin`. To s
 
 ```yaml
 - name: Set up kubelogin for non-interactive login
-  uses: azure/use-kubelogin@v1
+  uses: azure/use-kubelogin@v2
   with:
      kubelogin-version: 'v0.0.24'
 ```
@@ -91,13 +91,13 @@ To run this Action as a non-admin user, you must first install `kubelogin`. To s
 If you are executing this Action as a non-admin user, you need to toggle the optional `use-kubelogin` Action input to `true` for it to work.
 
 ```yaml
-- uses: azure/login@v1
+- uses: azure/login@v2
   with:
      client-id: ${{ secrets.AZURE_CLIENT_ID }}
      tenant-id: ${{ secrets.AZURE_TENANT_ID }}
      subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-- uses: azure/aks-set-context@v3
+- uses: azure/aks-set-context@v4
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
@@ -106,11 +106,11 @@ If you are executing this Action as a non-admin user, you need to toggle the opt
 ```
 
 ```yaml
-- uses: azure/login@v1
+- uses: azure/login@v2
   with:
      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-- uses: azure/aks-set-context@v3
+- uses: azure/aks-set-context@v4
   with:
      resource-group: '<resource group name>'
      cluster-name: '<cluster name>'
