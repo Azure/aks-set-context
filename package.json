@@ -24,12 +24,12 @@
       "@actions/io": "^1.1.1"
    },
    "devDependencies": {
-      "@types/jest": "^29.5.13",
-      "@types/node": "^22.7.5",
+      "@types/jest": "^29.5.14",
+      "@types/node": "^22.8.7",
       "@vercel/ncc": "^0.38.2",
       "jest": "^29.7.0",
       "prettier": "^3.2.5",
       "ts-jest": "^29.2.5",
-      "typescript": "^5.6.2"
+      "typescript": "^5.6.3"
    }
 }
