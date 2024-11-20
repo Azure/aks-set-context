@@ -36,6 +36,7 @@ export async function run() {
       const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
       const publicFqdnInput = core.getInput('public-fqdn') || ''
       const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
+      const fleetName = core.getInput('fleet-name') || ''
 
       // check az tools
       const azPath = await io.which(AZ_TOOL_NAME, false)
@@ -50,20 +51,37 @@ export async function run() {
          runnerTempDirectory,
          `kubeconfig_${Date.now()}`
       )
+      let cmd = []
       core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
-      const cmd = [
-         'aks',
-         'get-credentials',
-         '--resource-group',
-         resourceGroupName,
-         '--name',
-         clusterName,
-         '-f',
-         kubeconfigPath
-      ]
-      if (subscription) cmd.push('--subscription', subscription)
-      if (admin) cmd.push('--admin')
-      if (publicFqdn) cmd.push('--public-fqdn')
+      if (fleetName){
+         cmd = [
+            'fleet',
+            'get-credentials',
+            '--resource-group',
+            resourceGroupName,
+            '--name',
+            fleetName,
+            '-f',
+            kubeconfigPath
+         ]
+         if (subscription) cmd.push('--subscription', subscription)
+      }
+      else{
+         cmd = [
+            'aks',
+            'get-credentials',
+            '--resource-group',
+            resourceGroupName,
+            '--name',
+            clusterName,
+            '-f',
+            kubeconfigPath
+         ]
+         if (subscription) cmd.push('--subscription', subscription)
+         if (admin) cmd.push('--admin')
+         if (publicFqdn) cmd.push('--public-fqdn')
+
+      }
 
       const exitCode = await exec.exec(AZ_TOOL_NAME, cmd)
       if (exitCode !== 0)
