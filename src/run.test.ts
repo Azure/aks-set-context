@@ -11,7 +11,7 @@ const azPath = 'path'
 const runnerTemp = 'temp'
 const date = 1644272184664
 // GitHub testrunner was timing out so needed to up the timeout limit
-const extendedTimeout = 17500
+const extendedTimeout = 20000
 
 describe('Set context', () => {
    it('throws without resource-group', async () => {
