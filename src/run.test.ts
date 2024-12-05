@@ -5,7 +5,7 @@ import * as exec from '@actions/exec'
 import * as fs from 'fs'
 
 const resourceGroup = 'sample-rg'
-const clusterName = 'sample-resource'
+const clusterName = 'sample-cluster'
 const resourceType = 'Microsoft.ContainerService/managedClusters'
 const resourceTypeFleet = 'Microsoft.ContainerService/fleets'
 const subscription = 'subscription-example'
