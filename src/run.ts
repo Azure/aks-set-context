@@ -73,10 +73,14 @@ export async function run() {
          kubeconfigPath
       ]
       if (subscription) cmd.push('--subscription', subscription)
-      if ((admin || publicFqdn) && resourceType !== 'microsoft.containerservice/fleets') {
-         if (admin) cmd.push('--admin')
-         if (publicFqdn) cmd.push('--public-fqdn')
+      if (resourceType === 'microsoft.containerservice/fleets' && admin) {
+         throw Error('admin must not be true when resource type is Microsoft.ContainerService/fleets')
       }
+      if (resourceType === 'microsoft.containerservice/fleets' && publicFqdn) {
+         throw Error('public-fqdn must not be true when resource type is Microsoft.ContainerService/fleets')
+      }
+      if (admin) cmd.push('--admin')
+      if (publicFqdn) cmd.push('--public-fqdn')
 
       const exitCode = await exec.exec(AZ_TOOL_NAME, cmd)
       if (exitCode !== 0)
