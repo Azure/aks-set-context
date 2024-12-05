@@ -3,9 +3,10 @@ import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as fs from 'fs'
-const fleetName = 'fleet-name'
 const resourceGroup = 'sample-rg'
-const clusterName = 'sample-cluster'
+const resourceName = 'sample-resource'
+const resourceType = 'aks'
+const resourceTypeFleet = 'fleet'
 const subscription = 'subscription-example'
 const azPath = 'path'
 const runnerTemp = 'temp'
@@ -19,13 +20,13 @@ describe('Set context', () => {
    })
 
    it(
-      'throws without cluster-name',
+      'throws without resource-name',
       async () => {
          jest
             .spyOn(core, 'getInput')
             .mockImplementation((inputName, options) => {
                if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'cluster-name') return ''
+               if (inputName == 'resource-name') return ''
                return ''
             })
          await expect(run()).rejects.toThrow()
@@ -40,7 +41,7 @@ describe('Set context', () => {
             .spyOn(core, 'getInput')
             .mockImplementation((inputName, options) => {
                if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'cluster-name') return clusterName
+               if (inputName == 'resource-name') return resourceName
             })
          await expect(run()).rejects.toThrow()
       },
@@ -50,7 +51,7 @@ describe('Set context', () => {
    it('gets the kubeconfig and sets the context', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'cluster-name') return clusterName
+         if (inputName == 'resource-name') return resourceName
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
@@ -68,7 +69,7 @@ describe('Set context', () => {
          '--resource-group',
          resourceGroup,
          '--name',
-         clusterName,
+         resourceName,
          '-f',
          kubeconfigPath
       ])
@@ -78,8 +79,8 @@ describe('Set context', () => {
    it('calls az fleet get-credentials when fleet-name is provided', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'cluster-name') return clusterName
-         if (inputName == 'fleet-name') return fleetName
+         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'resource-type') return resourceTypeFleet
          return ''
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
@@ -98,7 +99,7 @@ describe('Set context', () => {
          '--resource-group',
          resourceGroup,
          '--name',
-         fleetName,
+         resourceName,
          '-f',
          kubeconfigPath
       ])
@@ -110,7 +111,8 @@ describe('Set context', () => {
    it('gets the kubeconfig and sets the context as a non admin user', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'cluster-name') return clusterName
+         if (inputName == 'resource-type') return resourceType
+         if (inputName == 'resource-name') return resourceName
          if (inputName == 'admin') return 'false'
          if (inputName == 'use-kubelogin') return 'true'
       })
@@ -130,7 +132,7 @@ describe('Set context', () => {
          '--resource-group',
          resourceGroup,
          '--name',
-         clusterName,
+         resourceName,
          '-f',
          kubeconfigPath
       ])
@@ -146,7 +148,8 @@ describe('Set context', () => {
    it('gets the kubeconfig and sets the context with subscription', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'cluster-name') return clusterName
+         if (inputName == 'resource-type') return resourceType
+         if (inputName == 'resource-name') return resourceName
          if (inputName == 'subscription') return subscription
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
@@ -165,7 +168,7 @@ describe('Set context', () => {
          '--resource-group',
          resourceGroup,
          '--name',
-         clusterName,
+         resourceName,
          '-f',
          kubeconfigPath,
          '--subscription',
@@ -178,7 +181,8 @@ describe('Set context', () => {
    it('gets the kubeconfig and sets the context with admin', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'cluster-name') return clusterName
+         if (inputName == 'resource-type') return resourceType
+         if (inputName == 'resource-name') return resourceName
          if (inputName == 'admin') return 'true'
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
@@ -197,7 +201,7 @@ describe('Set context', () => {
          '--resource-group',
          resourceGroup,
          '--name',
-         clusterName,
+         resourceName,
          '-f',
          kubeconfigPath,
          '--admin'
@@ -209,7 +213,8 @@ describe('Set context', () => {
    it('can use public-fqdn', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'cluster-name') return clusterName
+         if (inputName == 'resource-type') return resourceType
+         if (inputName == 'resource-name') return resourceName
          if (inputName == 'admin') return 'true'
          if (inputName == 'public-fqdn') return 'true'
       })
@@ -229,7 +234,7 @@ describe('Set context', () => {
          '--resource-group',
          resourceGroup,
          '--name',
-         clusterName,
+         resourceName,
          '-f',
          kubeconfigPath,
          '--admin',

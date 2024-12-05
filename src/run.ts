@@ -28,7 +28,8 @@ export async function run() {
       const resourceGroupName = core.getInput('resource-group', {
          required: true
       })
-      const clusterName = core.getInput('cluster-name', {required: true})
+      const resourceName = core.getInput('resource-name', {required: true})
+      const resourceType = core.getInput('resource-type') || ''
       const subscription = core.getInput('subscription') || ''
       const adminInput = core.getInput('admin') || ''
       const admin = adminInput.toLowerCase() === 'true'
@@ -36,7 +37,8 @@ export async function run() {
       const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
       const publicFqdnInput = core.getInput('public-fqdn') || ''
       const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
-      const fleetName = core.getInput('fleet-name') || ''
+
+
 
       // check az tools
       const azPath = await io.which(AZ_TOOL_NAME, false)
@@ -55,18 +57,18 @@ export async function run() {
       core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
 
       const cmd = [
-            fleetName ? 'fleet':'aks',
+            resourceType=='fleet' ? 'fleet':'aks',
             'get-credentials',
             '--resource-group',
             resourceGroupName,
             '--name',
-             fleetName? fleetName : clusterName,
+            resourceName,
             '-f',
             kubeconfigPath
          ]
 
          if (subscription) cmd.push('--subscription', subscription)
-         if (!fleetName) {
+         if (resourceType!='fleet') {
             if (admin) cmd.push('--admin')
             if (publicFqdn) cmd.push('--public-fqdn')
          }
