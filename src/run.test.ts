@@ -93,7 +93,7 @@ describe('Set context', () => {
       expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
       expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
    })
-   
+
    it('calls az fleet get-credentials when fleet is the resource type', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
@@ -123,7 +123,9 @@ describe('Set context', () => {
       ])
       expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
       expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
-      expect(core.debug).toBeCalledWith(`Writing kubeconfig to ${kubeconfigPath}`)
+      expect(core.debug).toBeCalledWith(
+         `Writing kubeconfig to ${kubeconfigPath}`
+      )
    })
 
    it('gets the kubeconfig and sets the context as a non admin user', async () => {

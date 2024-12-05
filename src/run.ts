@@ -29,7 +29,10 @@ export async function run() {
          required: true
       })
       const clusterName = core.getInput('cluster-name', {required: true})
-      const resourceType = core.getInput('resource-type') || 'Microsoft.ContainerService/managedClusters'
+      const resourceType = (
+         core.getInput('resource-type') ||
+         'Microsoft.ContainerService/managedClusters'
+      ).toLowerCase()
       const subscription = core.getInput('subscription') || ''
       const adminInput = core.getInput('admin') || ''
       const admin = adminInput.toLowerCase() === 'true'
@@ -40,8 +43,8 @@ export async function run() {
 
       // check resource type is recognized
       if (
-         resourceType.toLowerCase() !== 'microsoft.containerservice/fleets' &&
-         resourceType.toLowerCase() !== 'microsoft.containerservice/managedclusters'
+         resourceType !== 'microsoft.containerservice/fleets' &&
+         resourceType !== 'microsoft.containerservice/managedclusters'
       ) {
          throw Error(
             'Resource type not recognized, either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets is valid'
@@ -50,10 +53,14 @@ export async function run() {
 
       //validate user is not using admin or publicFqdn flags with fleet resource
       if (resourceType === 'microsoft.containerservice/fleets' && admin) {
-         throw Error('admin must not be true when resource type is Microsoft.ContainerService/fleets')
+         throw Error(
+            'admin must not be true when resource type is Microsoft.ContainerService/fleets'
+         )
       }
       if (resourceType === 'microsoft.containerservice/fleets' && publicFqdn) {
-         throw Error('public-fqdn must not be true when resource type is Microsoft.ContainerService/fleets')
+         throw Error(
+            'public-fqdn must not be true when resource type is Microsoft.ContainerService/fleets'
+         )
       }
 
       // check az tools
@@ -71,7 +78,7 @@ export async function run() {
       )
       core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
       const cmd = [
-         resourceType.toLowerCase()=='microsoft.containerservice/fleets' ? 'fleet':'aks',
+         resourceType == 'microsoft.containerservice/fleets' ? 'fleet' : 'aks',
          'get-credentials',
          '--resource-group',
          resourceGroupName,
