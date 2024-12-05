@@ -20,7 +20,6 @@ describe('Set context', () => {
       await expect(run()).rejects.toThrow()
    })
 
-
    it(
       'throws without cluster-name',
       async () => {
