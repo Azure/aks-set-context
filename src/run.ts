@@ -51,37 +51,25 @@ export async function run() {
          runnerTempDirectory,
          `kubeconfig_${Date.now()}`
       )
-      let cmd = []
-      core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
-      if (fleetName){
-         cmd = [
-            'fleet',
-            'get-credentials',
-            '--resource-group',
-            resourceGroupName,
-            '--name',
-            fleetName,
-            '-f',
-            kubeconfigPath
-         ]
-         if (subscription) cmd.push('--subscription', subscription)
-      }
-      else{
-         cmd = [
-            'aks',
-            'get-credentials',
-            '--resource-group',
-            resourceGroupName,
-            '--name',
-            clusterName,
-            '-f',
-            kubeconfigPath
-         ]
-         if (subscription) cmd.push('--subscription', subscription)
-         if (admin) cmd.push('--admin')
-         if (publicFqdn) cmd.push('--public-fqdn')
 
-      }
+      core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
+
+      const cmd = [
+            fleetName ? 'fleet':'aks',
+            'get-credentials',
+            '--resource-group',
+            resourceGroupName,
+            '--name',
+             fleetName? fleetName : clusterName,
+            '-f',
+            kubeconfigPath
+         ]
+
+         if (subscription) cmd.push('--subscription', subscription)
+         if (!fleetName) {
+            if (admin) cmd.push('--admin')
+            if (publicFqdn) cmd.push('--public-fqdn')
+         }
 
       const exitCode = await exec.exec(AZ_TOOL_NAME, cmd)
       if (exitCode !== 0)
