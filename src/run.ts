@@ -28,7 +28,7 @@ export async function run() {
       const resourceGroupName = core.getInput('resource-group', {
          required: true
       })
-      const resourceName = core.getInput('cluster-name', {required: true})
+      const clusterName = core.getInput('cluster-name', {required: true})
       const resourceType = core.getInput('resource-type') || 'Microsoft.ContainerService/managedClusters'
       const subscription = core.getInput('subscription') || ''
       const adminInput = core.getInput('admin') || ''
@@ -68,12 +68,12 @@ export async function run() {
          '--resource-group',
          resourceGroupName,
          '--name',
-         resourceName,
+         clusterName,
          '-f',
          kubeconfigPath
       ]
       if (subscription) cmd.push('--subscription', subscription)
-      if (resourceType!='fleet') {
+      if ((admin || publicFqdn) && resourceType !== 'microsoft.containerservice/fleets') {
          if (admin) cmd.push('--admin')
          if (publicFqdn) cmd.push('--public-fqdn')
       }
