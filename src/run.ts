@@ -30,6 +30,14 @@ export async function run() {
       })
       const clusterName = core.getInput('cluster-name', {required: true})
       const resourceType = core.getInput('resource-type') || 'Microsoft.ContainerService/managedClusters'
+      const subscription = core.getInput('subscription') || ''
+      const adminInput = core.getInput('admin') || ''
+      const admin = adminInput.toLowerCase() === 'true'
+      const useKubeLoginInput = core.getInput('use-kubelogin') || ''
+      const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
+      const publicFqdnInput = core.getInput('public-fqdn') || ''
+      const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
+
       // check resource type is recognized
       if (
          resourceType.toLowerCase() !== 'microsoft.containerservice/fleets' &&
@@ -39,13 +47,7 @@ export async function run() {
             'Resource type not recognized, either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets is valid'
          )
       }
-      const subscription = core.getInput('subscription') || ''
-      const adminInput = core.getInput('admin') || ''
-      const admin = adminInput.toLowerCase() === 'true'
-      const useKubeLoginInput = core.getInput('use-kubelogin') || ''
-      const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
-      const publicFqdnInput = core.getInput('public-fqdn') || ''
-      const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
+
       //validate user is not using admin or publicFqdn flags with fleet resource
       if (resourceType === 'microsoft.containerservice/fleets' && admin) {
          throw Error('admin must not be true when resource type is Microsoft.ContainerService/fleets')
