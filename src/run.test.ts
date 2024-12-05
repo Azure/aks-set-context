@@ -5,8 +5,8 @@ import * as exec from '@actions/exec'
 import * as fs from 'fs'
 const resourceGroup = 'sample-rg'
 const resourceName = 'sample-resource'
-const resourceType = 'aks'
-const resourceTypeFleet = 'fleet'
+const resourceType = 'Microsoft.ContainerService/managedClusters'
+const resourceTypeFleet = 'Microsoft.ContainerService/fleets'
 const subscription = 'subscription-example'
 const azPath = 'path'
 const runnerTemp = 'temp'
@@ -20,13 +20,13 @@ describe('Set context', () => {
    })
 
    it(
-      'throws without resource-name',
+      'throws without cluster-name',
       async () => {
          jest
             .spyOn(core, 'getInput')
             .mockImplementation((inputName, options) => {
                if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'resource-name') return ''
+               if (inputName == 'cluster-name') return ''
                return ''
             })
          await expect(run()).rejects.toThrow()
@@ -41,7 +41,7 @@ describe('Set context', () => {
             .spyOn(core, 'getInput')
             .mockImplementation((inputName, options) => {
                if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'resource-name') return resourceName
+               if (inputName == 'cluster-name') return resourceName
             })
          await expect(run()).rejects.toThrow()
       },
@@ -51,7 +51,7 @@ describe('Set context', () => {
    it('gets the kubeconfig and sets the context', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'cluster-name') return resourceName
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
@@ -79,7 +79,7 @@ describe('Set context', () => {
    it('calls az fleet get-credentials when fleet-name is provided', async () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
-         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'cluster-name') return resourceName
          if (inputName == 'resource-type') return resourceTypeFleet
          return ''
       })
@@ -112,7 +112,7 @@ describe('Set context', () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
-         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'cluster-name') return resourceName
          if (inputName == 'admin') return 'false'
          if (inputName == 'use-kubelogin') return 'true'
       })
@@ -149,7 +149,7 @@ describe('Set context', () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
-         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'cluster-name') return resourceName
          if (inputName == 'subscription') return subscription
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
@@ -182,7 +182,7 @@ describe('Set context', () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
-         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'cluster-name') return resourceName
          if (inputName == 'admin') return 'true'
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
@@ -214,7 +214,7 @@ describe('Set context', () => {
       jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
-         if (inputName == 'resource-name') return resourceName
+         if (inputName == 'cluster-name') return resourceName
          if (inputName == 'admin') return 'true'
          if (inputName == 'public-fqdn') return 'true'
       })

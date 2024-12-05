@@ -28,8 +28,8 @@ export async function run() {
       const resourceGroupName = core.getInput('resource-group', {
          required: true
       })
-      const resourceName = core.getInput('resource-name', {required: true})
-      const resourceType = core.getInput('resource-type') || ''
+      const resourceName = core.getInput('cluster-name', {required: true})
+      const resourceType = core.getInput('resource-type') || 'Microsoft.ContainerService/managedClusters'
       const subscription = core.getInput('subscription') || ''
       const adminInput = core.getInput('admin') || ''
       const admin = adminInput.toLowerCase() === 'true'
@@ -38,7 +38,15 @@ export async function run() {
       const publicFqdnInput = core.getInput('public-fqdn') || ''
       const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
 
-
+      // check resource type is recognized
+      if (
+         resourceType.toLowerCase() !== 'microsoft.containerservice/fleets' &&
+         resourceType.toLowerCase() !== 'microsoft.containerservice/managedclusters'
+      ) {
+         throw Error(
+            'Resource type not recognized, either Microsoft.Containerservice/managedclusters or Microsoft.Containerservice/fleets is valid'
+         )
+      }
 
       // check az tools
       const azPath = await io.which(AZ_TOOL_NAME, false)
@@ -47,6 +55,7 @@ export async function run() {
             'Az cli tools not installed. You must install them before running this action.'
          )
 
+
       // get kubeconfig
       const runnerTempDirectory = process.env['RUNNER_TEMP'] // use process.env until the core libs are updated
       const kubeconfigPath = path.join(
@@ -54,10 +63,11 @@ export async function run() {
          `kubeconfig_${Date.now()}`
       )
 
+
       core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
 
       const cmd = [
-            resourceType=='fleet' ? 'fleet':'aks',
+            resourceType.toLowerCase()=='microsoft.containerservice/fleets' ? 'fleet':'aks',
             'get-credentials',
             '--resource-group',
             resourceGroupName,
