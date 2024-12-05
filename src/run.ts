@@ -55,33 +55,28 @@ export async function run() {
             'Az cli tools not installed. You must install them before running this action.'
          )
 
-
       // get kubeconfig
       const runnerTempDirectory = process.env['RUNNER_TEMP'] // use process.env until the core libs are updated
       const kubeconfigPath = path.join(
          runnerTempDirectory,
          `kubeconfig_${Date.now()}`
       )
-
-
       core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
-
       const cmd = [
-            resourceType.toLowerCase()=='microsoft.containerservice/fleets' ? 'fleet':'aks',
-            'get-credentials',
-            '--resource-group',
-            resourceGroupName,
-            '--name',
-            resourceName,
-            '-f',
-            kubeconfigPath
-         ]
-
-         if (subscription) cmd.push('--subscription', subscription)
-         if (resourceType!='fleet') {
-            if (admin) cmd.push('--admin')
-            if (publicFqdn) cmd.push('--public-fqdn')
-         }
+         resourceType.toLowerCase()=='microsoft.containerservice/fleets' ? 'fleet':'aks',
+         'get-credentials',
+         '--resource-group',
+         resourceGroupName,
+         '--name',
+         resourceName,
+         '-f',
+         kubeconfigPath
+      ]
+      if (subscription) cmd.push('--subscription', subscription)
+      if (resourceType!='fleet') {
+         if (admin) cmd.push('--admin')
+         if (publicFqdn) cmd.push('--public-fqdn')
+      }
 
       const exitCode = await exec.exec(AZ_TOOL_NAME, cmd)
       if (exitCode !== 0)
