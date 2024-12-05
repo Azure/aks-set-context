@@ -44,7 +44,7 @@ export async function run() {
          resourceType.toLowerCase() !== 'microsoft.containerservice/managedclusters'
       ) {
          throw Error(
-            'Resource type not recognized, either Microsoft.Containerservice/managedclusters or Microsoft.Containerservice/fleets is valid'
+            'Resource type not recognized, either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets is valid'
          )
       }
 
