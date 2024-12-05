@@ -35,6 +35,22 @@ describe('Set context', () => {
    )
 
    it(
+      'throws if resource-type is not recognized',
+      async () => {
+         jest
+            .spyOn(core, 'getInput')
+            .mockImplementation((inputName, options) => {
+               if (inputName == 'resource-group') return resourceGroup
+               if (inputName == 'cluster-name') return resourceName
+               if (inputName == 'resource-type') return 'invalid-resource-type'
+               return ''
+            })
+         await expect(run()).rejects.toThrow()
+      },
+      extendedTimeout
+   )
+
+   it(
       'throws without az tools',
       async () => {
          jest
