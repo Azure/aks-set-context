@@ -24,7 +24,7 @@ export async function run() {
          getUserAgent(originalAzUserAgentPs)
       )
 
-      // get inputs
+      // get inputs and validate resource type input
       const resourceGroupName = core.getInput('resource-group', {
          required: true
       })
@@ -38,17 +38,7 @@ export async function run() {
       const resourceInput = (
          core.getInput('resource-type') ||
          'Microsoft.ContainerService/managedClusters'
-      ).toLowerCase() as ResourceType
-      const resourceType: ResourceType = resourceInput
-      const subscription = core.getInput('subscription') || ''
-      const adminInput = core.getInput('admin') || ''
-      const admin = adminInput.toLowerCase() === 'true'
-      const useKubeLoginInput = core.getInput('use-kubelogin') || ''
-      const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
-      const publicFqdnInput = core.getInput('public-fqdn') || ''
-      const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
-
-      // validate resource type is recognized
+      ).toLowerCase()
       if (
          resourceInput !== resourceTypeFleet &&
          resourceInput !== resourceTypeManagedCluster
@@ -57,6 +47,14 @@ export async function run() {
             'Resource type not recognized, either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets is valid'
          )
       }
+      const resourceType: ResourceType = resourceInput
+      const subscription = core.getInput('subscription') || ''
+      const adminInput = core.getInput('admin') || ''
+      const admin = adminInput.toLowerCase() === 'true'
+      const useKubeLoginInput = core.getInput('use-kubelogin') || ''
+      const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
+      const publicFqdnInput = core.getInput('public-fqdn') || ''
+      const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
 
       // validate user is not using admin or publicFqdn flags with fleet resource
       if (resourceType === 'microsoft.containerservice/fleets' && admin) {
