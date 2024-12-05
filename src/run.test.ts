@@ -3,6 +3,7 @@ import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as fs from 'fs'
+
 const resourceGroup = 'sample-rg'
 const clusterName = 'sample-resource'
 const resourceType = 'Microsoft.ContainerService/managedClusters'
