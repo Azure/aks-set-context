@@ -29,10 +29,17 @@ export async function run() {
          required: true
       })
       const clusterName = core.getInput('cluster-name', {required: true})
-      const resourceType = (
+      const resourceTypeFleet = 'microsoft.containerservice/fleets'
+      const resourceTypeManagedCluster =
+         'microsoft.containerservice/managedclusters'
+      type ResourceType =
+         | typeof resourceTypeFleet
+         | typeof resourceTypeManagedCluster
+      const resourceInput = (
          core.getInput('resource-type') ||
          'Microsoft.ContainerService/managedClusters'
-      ).toLowerCase()
+      ).toLowerCase() as ResourceType
+      const resourceType: ResourceType = resourceInput
       const subscription = core.getInput('subscription') || ''
       const adminInput = core.getInput('admin') || ''
       const admin = adminInput.toLowerCase() === 'true'
@@ -41,17 +48,17 @@ export async function run() {
       const publicFqdnInput = core.getInput('public-fqdn') || ''
       const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
 
-      // check resource type is recognized
+      // validate resource type is recognized
       if (
-         resourceType !== 'microsoft.containerservice/fleets' &&
-         resourceType !== 'microsoft.containerservice/managedclusters'
+         resourceInput !== resourceTypeFleet &&
+         resourceInput !== resourceTypeManagedCluster
       ) {
          throw Error(
             'Resource type not recognized, either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets is valid'
          )
       }
 
-      //validate user is not using admin or publicFqdn flags with fleet resource
+      // validate user is not using admin or publicFqdn flags with fleet resource
       if (resourceType === 'microsoft.containerservice/fleets' && admin) {
          throw Error(
             'admin must not be true when resource type is Microsoft.ContainerService/fleets'

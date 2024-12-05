@@ -8,6 +8,7 @@ const resourceGroup = 'sample-rg'
 const clusterName = 'sample-cluster'
 const resourceType = 'Microsoft.ContainerService/managedClusters'
 const resourceTypeFleet = 'Microsoft.ContainerService/fleets'
+const resourceTypeMixedCasingFleet = 'miCrosOft.contAinerServIce/fleeTs'
 const subscription = 'subscription-example'
 const azPath = 'path'
 const runnerTemp = 'temp'
@@ -99,6 +100,40 @@ describe('Set context', () => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'resource-type') return resourceTypeFleet
+         return ''
+      })
+      jest.spyOn(io, 'which').mockImplementation(async () => azPath)
+      process.env['RUNNER_TEMP'] = runnerTemp
+      jest.spyOn(Date, 'now').mockImplementation(() => date)
+      jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
+      jest.spyOn(fs, 'chmodSync').mockImplementation()
+      jest.spyOn(core, 'exportVariable').mockImplementation()
+      jest.spyOn(core, 'debug').mockImplementation()
+
+      await expect(run()).resolves.not.toThrowError()
+      const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
+      expect(exec.exec).toBeCalledWith('az', [
+         'fleet',
+         'get-credentials',
+         '--resource-group',
+         resourceGroup,
+         '--name',
+         clusterName,
+         '-f',
+         kubeconfigPath
+      ])
+      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.debug).toBeCalledWith(
+         `Writing kubeconfig to ${kubeconfigPath}`
+      )
+   })
+
+   it('passes even if resource type has mixed casing', async () => {
+      jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+         if (inputName == 'resource-group') return resourceGroup
+         if (inputName == 'cluster-name') return clusterName
+         if (inputName == 'resource-type') return resourceTypeMixedCasingFleet
          return ''
       })
       jest.spyOn(io, 'which').mockImplementation(async () => azPath)
