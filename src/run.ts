@@ -24,11 +24,30 @@ export async function run() {
          getUserAgent(originalAzUserAgentPs)
       )
 
-      // get inputs
+      // get inputs and validate resource type input
       const resourceGroupName = core.getInput('resource-group', {
          required: true
       })
       const clusterName = core.getInput('cluster-name', {required: true})
+      const resourceTypeFleet = 'microsoft.containerservice/fleets'
+      const resourceTypeManagedCluster =
+         'microsoft.containerservice/managedclusters'
+      type ResourceType =
+         | typeof resourceTypeFleet
+         | typeof resourceTypeManagedCluster
+      const resourceInput = (
+         core.getInput('resource-type') ||
+         'Microsoft.ContainerService/managedClusters'
+      ).toLowerCase()
+      if (
+         resourceInput !== resourceTypeFleet &&
+         resourceInput !== resourceTypeManagedCluster
+      ) {
+         throw Error(
+            'Resource type not recognized, either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets is valid'
+         )
+      }
+      const resourceType: ResourceType = resourceInput
       const subscription = core.getInput('subscription') || ''
       const adminInput = core.getInput('admin') || ''
       const admin = adminInput.toLowerCase() === 'true'
@@ -36,6 +55,18 @@ export async function run() {
       const useKubeLogin = useKubeLoginInput.toLowerCase() === 'true' && !admin
       const publicFqdnInput = core.getInput('public-fqdn') || ''
       const publicFqdn = publicFqdnInput.toLowerCase() === 'true'
+
+      // validate user is not using admin or publicFqdn flags with fleet resource
+      if (resourceType === 'microsoft.containerservice/fleets' && admin) {
+         throw Error(
+            'admin must not be true when resource type is Microsoft.ContainerService/fleets'
+         )
+      }
+      if (resourceType === 'microsoft.containerservice/fleets' && publicFqdn) {
+         throw Error(
+            'public-fqdn must not be true when resource type is Microsoft.ContainerService/fleets'
+         )
+      }
 
       // check az tools
       const azPath = await io.which(AZ_TOOL_NAME, false)
@@ -52,7 +83,7 @@ export async function run() {
       )
       core.debug(`Writing kubeconfig to ${kubeconfigPath}`)
       const cmd = [
-         'aks',
+         resourceType == 'microsoft.containerservice/fleets' ? 'fleet' : 'aks',
          'get-credentials',
          '--resource-group',
          resourceGroupName,
