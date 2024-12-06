@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.0.2] - 2024-12-06
+
+### Added
+
+-  #135 Added Fleet Functionality
+
 ## [4.0.1] - 2024-09-06
 
 ### Changed

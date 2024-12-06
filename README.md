@@ -38,6 +38,10 @@ You must run [Azure/login](https://github.com/Azure/login) before this action.
     <td><code>public-fqdn</code></td>
     <td>Get private cluster credential with server address to be public fqdn</td>
   </tr>
+  <tr>
+    <td><code>resource-type</code></td>
+    <td>Microsoft.ContainerService/managedClusters (default) or Microsoft.ContainerService/fleets</td>
+  </tr>
 
 </table>
 
