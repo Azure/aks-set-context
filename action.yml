@@ -23,6 +23,10 @@ inputs:
       description: 'Get private cluster credential with server address to be public fqdn.  Values: true or false'
       default: false
       required: false
+   resource-type:
+      description: Either Microsoft.ContainerService/managedClusters or Microsoft.ContainerService/fleets'.
+      required: false
+      default: 'Microsoft.ContainerService/managedClusters'
 branding:
    color: 'green'
 runs:
