@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.0.3] - 2025-04-21
+
+### Added
+
+- #161 Added resource type input
+
 ## [4.0.2] - 2024-12-06
 
 ### Added
