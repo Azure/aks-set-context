@@ -83,7 +83,7 @@ To run this Action as a non-admin user, you must first install `kubelogin`. To s
 
 ```yaml
 - name: Set up kubelogin for non-interactive login
-  uses: azure/use-kubelogin@v2
+  uses: azure/use-kubelogin@v1.2
   with:
      kubelogin-version: 'v0.0.24'
 ```
