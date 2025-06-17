@@ -24,13 +24,11 @@ describe('Set context', () => {
    it(
       'throws without cluster-name',
       async () => {
-         jest
-            .spyOn(core, 'getInput')
-            .mockImplementation((inputName) => {
-               if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'cluster-name') return ''
-               return ''
-            })
+         jest.spyOn(core, 'getInput').mockImplementation((inputName) => {
+            if (inputName == 'resource-group') return resourceGroup
+            if (inputName == 'cluster-name') return ''
+            return ''
+         })
          await expect(run()).rejects.toThrow()
       },
       extendedTimeout
@@ -55,12 +53,10 @@ describe('Set context', () => {
    it(
       'throws without az tools',
       async () => {
-         jest
-            .spyOn(core, 'getInput')
-            .mockImplementation((inputName) => {
-               if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'cluster-name') return clusterName
-            })
+         jest.spyOn(core, 'getInput').mockImplementation((inputName) => {
+            if (inputName == 'resource-group') return resourceGroup
+            if (inputName == 'cluster-name') return clusterName
+         })
          await expect(run()).rejects.toThrow()
       },
       extendedTimeout
@@ -92,7 +88,10 @@ describe('Set context', () => {
          kubeconfigPath
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
    })
 
    it('calls az fleet get-credentials when fleet is the resource type', async () => {
@@ -123,7 +122,10 @@ describe('Set context', () => {
          kubeconfigPath
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
       expect(core.debug).toHaveBeenCalledWith(
          `Writing kubeconfig to ${kubeconfigPath}`
       )
@@ -157,7 +159,10 @@ describe('Set context', () => {
          kubeconfigPath
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
       expect(core.debug).toHaveBeenCalledWith(
          `Writing kubeconfig to ${kubeconfigPath}`
       )
@@ -197,7 +202,10 @@ describe('Set context', () => {
          'azurecli'
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
    })
 
    it('gets the kubeconfig and sets the context with subscription', async () => {
@@ -230,7 +238,10 @@ describe('Set context', () => {
          subscription
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
    })
 
    it('gets the kubeconfig and sets the context with admin', async () => {
@@ -262,7 +273,10 @@ describe('Set context', () => {
          '--admin'
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
    })
 
    it('can use public-fqdn', async () => {
@@ -296,6 +310,9 @@ describe('Set context', () => {
          '--public-fqdn'
       ])
       expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.exportVariable).toHaveBeenCalledWith(
+         'KUBECONFIG',
+         kubeconfigPath
+      )
    })
 })
