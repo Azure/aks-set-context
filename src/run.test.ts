@@ -26,7 +26,7 @@ describe('Set context', () => {
       async () => {
          jest
             .spyOn(core, 'getInput')
-            .mockImplementation((inputName, options) => {
+            .mockImplementation((inputName) => {
                if (inputName == 'resource-group') return resourceGroup
                if (inputName == 'cluster-name') return ''
                return ''
@@ -57,7 +57,7 @@ describe('Set context', () => {
       async () => {
          jest
             .spyOn(core, 'getInput')
-            .mockImplementation((inputName, options) => {
+            .mockImplementation((inputName) => {
                if (inputName == 'resource-group') return resourceGroup
                if (inputName == 'cluster-name') return clusterName
             })
@@ -67,7 +67,7 @@ describe('Set context', () => {
    )
 
    it('gets the kubeconfig and sets the context', async () => {
-      jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      jest.spyOn(core, 'getInput').mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'cluster-name') return clusterName
       })
@@ -79,9 +79,9 @@ describe('Set context', () => {
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      expect(exec.exec).toBeCalledWith('az', [
+      expect(exec.exec).toHaveBeenCalledWith('az', [
          'aks',
          'get-credentials',
          '--resource-group',
@@ -91,8 +91,8 @@ describe('Set context', () => {
          '-f',
          kubeconfigPath
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
    })
 
    it('calls az fleet get-credentials when fleet is the resource type', async () => {
@@ -110,9 +110,9 @@ describe('Set context', () => {
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      expect(exec.exec).toBeCalledWith('az', [
+      expect(exec.exec).toHaveBeenCalledWith('az', [
          'fleet',
          'get-credentials',
          '--resource-group',
@@ -122,9 +122,9 @@ describe('Set context', () => {
          '-f',
          kubeconfigPath
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
-      expect(core.debug).toBeCalledWith(
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.debug).toHaveBeenCalledWith(
          `Writing kubeconfig to ${kubeconfigPath}`
       )
    })
@@ -144,9 +144,9 @@ describe('Set context', () => {
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      expect(exec.exec).toBeCalledWith('az', [
+      expect(exec.exec).toHaveBeenCalledWith('az', [
          'fleet',
          'get-credentials',
          '--resource-group',
@@ -156,15 +156,15 @@ describe('Set context', () => {
          '-f',
          kubeconfigPath
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
-      expect(core.debug).toBeCalledWith(
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(core.debug).toHaveBeenCalledWith(
          `Writing kubeconfig to ${kubeconfigPath}`
       )
    })
 
    it('gets the kubeconfig and sets the context as a non admin user', async () => {
-      jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      jest.spyOn(core, 'getInput').mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
@@ -180,7 +180,7 @@ describe('Set context', () => {
       jest.spyOn(core, 'debug').mockImplementation()
 
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       expect(exec.exec).toHaveBeenNthCalledWith(1, 'az', [
          'aks',
          'get-credentials',
@@ -196,12 +196,12 @@ describe('Set context', () => {
          '-l',
          'azurecli'
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
    })
 
    it('gets the kubeconfig and sets the context with subscription', async () => {
-      jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      jest.spyOn(core, 'getInput').mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
@@ -215,9 +215,9 @@ describe('Set context', () => {
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      expect(exec.exec).toBeCalledWith('az', [
+      expect(exec.exec).toHaveBeenCalledWith('az', [
          'aks',
          'get-credentials',
          '--resource-group',
@@ -229,12 +229,12 @@ describe('Set context', () => {
          '--subscription',
          subscription
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
    })
 
    it('gets the kubeconfig and sets the context with admin', async () => {
-      jest.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      jest.spyOn(core, 'getInput').mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
@@ -248,9 +248,9 @@ describe('Set context', () => {
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      expect(exec.exec).toBeCalledWith('az', [
+      expect(exec.exec).toHaveBeenCalledWith('az', [
          'aks',
          'get-credentials',
          '--resource-group',
@@ -261,8 +261,8 @@ describe('Set context', () => {
          kubeconfigPath,
          '--admin'
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
    })
 
    it('can use public-fqdn', async () => {
@@ -281,9 +281,9 @@ describe('Set context', () => {
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
-      await expect(run()).resolves.not.toThrowError()
+      await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
-      expect(exec.exec).toBeCalledWith('az', [
+      expect(exec.exec).toHaveBeenCalledWith('az', [
          'aks',
          'get-credentials',
          '--resource-group',
@@ -295,7 +295,7 @@ describe('Set context', () => {
          '--admin',
          '--public-fqdn'
       ])
-      expect(fs.chmodSync).toBeCalledWith(kubeconfigPath, '600')
-      expect(core.exportVariable).toBeCalledWith('KUBECONFIG', kubeconfigPath)
+      expect(fs.chmodSync).toHaveBeenCalledWith(kubeconfigPath, '600')
+      expect(core.exportVariable).toHaveBeenCalledWith('KUBECONFIG', kubeconfigPath)
    })
 })
