@@ -9,7 +9,8 @@
       "test": "jest",
       "test-coverage": "jest --coverage",
       "format": "prettier --write .",
-      "format-check": "prettier --check ."
+      "format-check": "prettier --check .",
+      "prepare": "husky"
    },
    "keywords": [
       "actions",
@@ -21,7 +22,8 @@
    "dependencies": {
       "@actions/core": "^1.11.1",
       "@actions/exec": "^1.1.0",
-      "@actions/io": "^1.1.1"
+      "@actions/io": "^1.1.1",
+      "husky": "^9.1.7"
    },
    "devDependencies": {
       "@types/jest": "^30.0.0",
