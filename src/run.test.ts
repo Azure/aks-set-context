@@ -3,7 +3,7 @@ import {jest, describe, it, expect, beforeEach} from '@jest/globals'
 // Mock the @actions modules before any imports
 const mockCore = {
    getInput: jest.fn(),
-   exportVariable: jest.fn(), 
+   exportVariable: jest.fn(),
    debug: jest.fn(),
    setFailed: jest.fn()
 }
@@ -65,11 +65,11 @@ describe('Set context', () => {
       'throws if resource-type is not recognized',
       async () => {
          mockCore.getInput.mockImplementation((inputName, options) => {
-               if (inputName == 'resource-group') return resourceGroup
-               if (inputName == 'cluster-name') return clusterName
-               if (inputName == 'resource-type') return 'invalid-resource-type'
-               return ''
-            })
+            if (inputName == 'resource-group') return resourceGroup
+            if (inputName == 'cluster-name') return clusterName
+            if (inputName == 'resource-type') return 'invalid-resource-type'
+            return ''
+         })
          await expect(run()).rejects.toThrow()
       },
       extendedTimeout
@@ -94,7 +94,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
@@ -128,7 +128,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
@@ -165,7 +165,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
@@ -203,7 +203,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
@@ -242,7 +242,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
@@ -278,7 +278,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
@@ -314,7 +314,7 @@ describe('Set context', () => {
       })
       mockIo.which.mockImplementation(async () => azPath)
       process.env['RUNNER_TEMP'] = runnerTemp as string
-      (Date as any).now = jest.fn(() => date)
+      ;(Date as any).now = jest.fn(() => date)
       mockExec.exec.mockImplementation(async () => 0)
       mockFs.chmodSync.mockImplementation(() => {})
       mockCore.exportVariable.mockImplementation(() => {})
