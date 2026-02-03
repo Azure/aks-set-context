@@ -1,20 +1,20 @@
-module.exports = {
+export default {
    clearMocks: true,
    resetMocks: true,
-   restoreMocks: true,
    moduleFileExtensions: ['js', 'ts'],
    testEnvironment: 'node',
    testMatch: ['**/*.test.ts'],
+   preset: 'ts-jest/presets/default-esm',
+   extensionsToTreatAsEsm: ['.ts'],
    transform: {
-      '^.+\\.ts$': 'ts-jest'
+      '^.+\\.ts$': ['ts-jest', { 
+         useESM: true
+      }]
    },
-   preset: 'ts-jest',
    moduleNameMapper: {
-      '^@actions/core$': '<rootDir>/__mocks__/@actions/core.js',
-      '^@actions/exec$': '<rootDir>/__mocks__/@actions/exec.js',
-      '^@actions/io$': '<rootDir>/__mocks__/@actions/io.js'
+      '^(\\.{1,2}/.*)\\.js$': '$1'
    },
-   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+   transformIgnorePatterns: [],
    verbose: true,
    coverageThreshold: {
       global: {
