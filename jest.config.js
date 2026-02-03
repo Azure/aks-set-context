@@ -1,11 +1,23 @@
-module.exports = {
+export default {
    clearMocks: true,
+   resetMocks: true,
    moduleFileExtensions: ['js', 'ts'],
    testEnvironment: 'node',
    testMatch: ['**/*.test.ts'],
+   preset: 'ts-jest/presets/default-esm',
+   extensionsToTreatAsEsm: ['.ts'],
    transform: {
-      '^.+\\.ts$': 'ts-jest'
+      '^.+\\.ts$': [
+         'ts-jest',
+         {
+            useESM: true
+         }
+      ]
    },
+   moduleNameMapper: {
+      '^(\\.{1,2}/.*)\\.js$': '$1'
+   },
+   transformIgnorePatterns: [],
    verbose: true,
    coverageThreshold: {
       global: {
