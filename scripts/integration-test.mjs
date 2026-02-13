@@ -3,36 +3,31 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 
-function fail(message) {
-   console.error(message)
+// -- Helpers ------------------------------------------------------------------
+
+const bundlePath = path.resolve('lib/index.js')
+if (!fs.existsSync(bundlePath)) {
+   console.error(`Missing bundle at ${bundlePath}. Run the build first.`)
    process.exit(1)
 }
 
-// -- 1. Ensure the production bundle exists before running the test --
-const bundlePath = path.resolve('lib/index.js')
-if (!fs.existsSync(bundlePath)) {
-   fail(`Missing bundle at ${bundlePath}. Run the build first.`)
+// Create a fresh temp directory with a bin/ subdirectory for CLI stubs.
+function createTempDir() {
+   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aks-set-context-'))
+   const binDir = path.join(tempDir, 'bin')
+   fs.mkdirSync(binDir, {recursive: true})
+   return {tempDir, binDir}
 }
 
-// -- 2. Set up a temp directory with a fake `az` CLI --
-// We create a stub shell script that stands in for the real Azure CLI.
-// When invoked, the stub:
-//   a) logs every argument it receives to az.log
-//   b) finds the -f <path> (kubeconfig) argument and `touch`es the file
-//      so downstream code that expects the file to exist won't fail
-//   c) exits 0 (success)
-const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aks-set-context-'))
-const binDir = path.join(tempDir, 'bin')
-fs.mkdirSync(binDir, {recursive: true})
-
-const logPath = path.join(tempDir, 'az.log')
-const azPath = path.join(binDir, 'az')
-const azScript = `#!/usr/bin/env bash
-set -euo pipefail          # abort on errors, undefined vars, or pipe failures
-echo "$@" > "${logPath}"   # log all received arguments so tests can assert on them
+// Write a fake `az` script that logs its arguments and exits with the given code.
+// When exitCode is 0 it also creates the kubeconfig file referenced by -f so
+// the action doesn't fail when it checks for its existence.
+function writeAzStub(binDir, logPath, exitCode) {
+   const script = `#!/usr/bin/env bash
+set -euo pipefail
+echo "$@" > "${logPath}"
+if [ ${exitCode} -ne 0 ]; then exit ${exitCode}; fi
 args=("$@")
-# scan for the -f flag to find the kubeconfig output path, then create the
-# file so the action doesn't fail when it checks for its existence afterward
 for ((i=0; i<\${#args[@]}; i++)); do
   if [[ "\${args[$i]}" == "-f" ]]; then
     kubeconfig_path="\${args[$i+1]}"
@@ -45,76 +40,142 @@ for ((i=0; i<\${#args[@]}; i++)); do
 done
 exit 0
 `
-
-fs.writeFileSync(azPath, azScript, {mode: 0o755})
-fs.chmodSync(azPath, 0o755)
-
-// -- 3. Build the environment the action expects at runtime --
-// RUNNER_TEMP  – where the action writes temporary files (GitHub-provided)
-// PATH         – prepend our stub dir so the fake `az` is found first
-// INPUT_*      – how GitHub Actions passes inputs to action code
-const resourceGroup = 'sample-rg'
-const clusterName = 'sample-cluster'
-
-const env = {
-   ...process.env,
-   RUNNER_TEMP: tempDir,
-   PATH: `${binDir}:${process.env.PATH || ''}`,
-   'INPUT_RESOURCE-GROUP': resourceGroup,
-   'INPUT_CLUSTER-NAME': clusterName
+   const azPath = path.join(binDir, 'az')
+   fs.writeFileSync(azPath, script, {mode: 0o755})
+   fs.chmodSync(azPath, 0o755)
 }
 
-// -- 4. Run the bundled action in a child process --
-const child = spawn(process.execPath, [bundlePath], {
-   env,
-   stdio: 'inherit'
-})
-
-const exitCode = await new Promise((resolve) => {
-   child.on('exit', resolve)
-})
-
-if (exitCode !== 0) {
-   fail(`Bundle execution failed with exit code ${exitCode}`)
+// Build the environment the action expects at runtime.
+// `inputs` is a map of action input names (e.g. 'RESOURCE-GROUP') to values.
+function buildEnv(binDir, tempDir, inputs) {
+   const env = {
+      ...process.env,
+      RUNNER_TEMP: tempDir,
+      PATH: `${binDir}:${process.env.PATH || ''}`
+   }
+   for (const [key, value] of Object.entries(inputs)) {
+      env[`INPUT_${key}`] = value
+   }
+   return env
 }
 
-// -- 5. Verify the stub `az` was actually called --
-if (!fs.existsSync(logPath)) {
-   fail('Expected az to be invoked, but no log was written.')
+// Spawn the bundled action and return its exit code.
+function runBundle(env) {
+   return new Promise((resolve) => {
+      const child = spawn(process.execPath, [bundlePath], {
+         env,
+         stdio: 'pipe' // suppress output from individual cases
+      })
+      child.on('exit', (code) => resolve(code))
+   })
 }
 
-// -- 6. Assert that az received the correct arguments --
-// We do an ordered subsequence match: the required tokens must appear
-// in order, but other tokens may appear between them.
-const logged = fs.readFileSync(logPath, 'utf8').trim()
-const tokens = logged.split(' ').filter(Boolean)
-const requiredSequence = [
-   'aks',
-   'get-credentials',
-   '--resource-group',
-   resourceGroup,
-   '--name',
-   clusterName,
-   '-f'
+// Assert that `tokens` contains the `expected` values as an ordered subsequence.
+function assertArgsSubsequence(tokens, expected) {
+   let cursor = 0
+   for (const token of tokens) {
+      if (token === expected[cursor]) cursor += 1
+      if (cursor === expected.length) break
+   }
+   if (cursor !== expected.length) {
+      throw new Error(
+         `Expected args subsequence ${JSON.stringify(expected)}, got: ${tokens.join(' ')}`
+      )
+   }
+}
+
+// -- Test cases ---------------------------------------------------------------
+
+const cases = [
+   {
+      name: 'basic success',
+      inputs: {'RESOURCE-GROUP': 'sample-rg', 'CLUSTER-NAME': 'sample-cluster'},
+      azExitCode: 0,
+      expectSuccess: true,
+      expectedArgs: [
+         'aks',
+         'get-credentials',
+         '--resource-group',
+         'sample-rg',
+         '--name',
+         'sample-cluster',
+         '-f'
+      ]
+   },
+   {
+      name: 'missing required input (cluster-name)',
+      inputs: {'RESOURCE-GROUP': 'sample-rg'},
+      azExitCode: 0,
+      expectSuccess: false
+   },
+   {
+      name: 'az exits non-zero',
+      inputs: {'RESOURCE-GROUP': 'sample-rg', 'CLUSTER-NAME': 'sample-cluster'},
+      azExitCode: 1,
+      expectSuccess: false
+   }
 ]
 
-let cursor = 0
-for (const token of tokens) {
-   if (token === requiredSequence[cursor]) cursor += 1
-   if (cursor === requiredSequence.length) break
+// -- Runner -------------------------------------------------------------------
+
+let passed = 0
+let failed = 0
+
+for (const tc of cases) {
+   const {tempDir, binDir} = createTempDir()
+   const logPath = path.join(tempDir, 'az.log')
+
+   writeAzStub(binDir, logPath, tc.azExitCode)
+
+   const env = buildEnv(binDir, tempDir, tc.inputs)
+   const exitCode = await runBundle(env)
+
+   try {
+      if (tc.expectSuccess) {
+         if (exitCode !== 0) {
+            throw new Error(`Expected exit 0, got ${exitCode}`)
+         }
+
+         if (!fs.existsSync(logPath)) {
+            throw new Error('Expected az to be invoked, but no log was written')
+         }
+
+         const tokens = fs
+            .readFileSync(logPath, 'utf8')
+            .trim()
+            .split(' ')
+            .filter(Boolean)
+
+         if (tc.expectedArgs) {
+            assertArgsSubsequence(tokens, tc.expectedArgs)
+         }
+
+         // Verify kubeconfig path lives inside the temp directory
+         const kubeconfigIndex = tokens.indexOf('-f')
+         const kubeconfigPath = tokens[kubeconfigIndex + 1]
+         if (!kubeconfigPath || !kubeconfigPath.startsWith(tempDir)) {
+            throw new Error(
+               `Expected kubeconfig in ${tempDir}, got: ${kubeconfigPath || 'missing'}`
+            )
+         }
+      } else {
+         if (exitCode === 0) {
+            throw new Error('Expected non-zero exit code, got 0')
+         }
+      }
+
+      console.log(`  PASS  ${tc.name}`)
+      passed += 1
+      // Clean up on success
+      fs.rmSync(tempDir, {recursive: true, force: true})
+   } catch (err) {
+      console.error(`  FAIL  ${tc.name}: ${err.message}`)
+      console.error(`        temp dir preserved at ${tempDir}`)
+      failed += 1
+   }
 }
 
-if (cursor !== requiredSequence.length) {
-   fail(`az invocation did not include expected args. Got: ${logged}`)
-}
+// -- Summary ------------------------------------------------------------------
 
-// -- 7. Verify the kubeconfig path lives inside our temp directory --
-const kubeconfigIndex = tokens.indexOf('-f')
-const kubeconfigPath = tokens[kubeconfigIndex + 1]
-if (!kubeconfigPath || !kubeconfigPath.startsWith(tempDir)) {
-   fail(
-      `Expected kubeconfig path in ${tempDir}, got: ${kubeconfigPath || 'missing'}`
-   )
-}
-
-console.log('Integration test passed.')
+console.log(`\n${passed} passed, ${failed} failed`)
+if (failed > 0) process.exit(1)
