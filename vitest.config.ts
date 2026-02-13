@@ -1,6 +1,12 @@
 import {defineConfig} from 'vitest/config'
+import {fileURLToPath} from 'url'
 
 export default defineConfig({
+   server: {
+      deps: {
+         inline: [fileURLToPath(new URL('./src/run.ts', import.meta.url))]
+      }
+   },
    test: {
       clearMocks: true,
       environment: 'node',
