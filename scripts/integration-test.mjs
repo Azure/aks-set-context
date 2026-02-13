@@ -8,11 +8,19 @@ function fail(message) {
    process.exit(1)
 }
 
+// -- 1. Ensure the production bundle exists before running the test --
 const bundlePath = path.resolve('lib/index.js')
 if (!fs.existsSync(bundlePath)) {
    fail(`Missing bundle at ${bundlePath}. Run the build first.`)
 }
 
+// -- 2. Set up a temp directory with a fake `az` CLI --
+// We create a stub shell script that stands in for the real Azure CLI.
+// When invoked, the stub:
+//   a) logs every argument it receives to az.log
+//   b) finds the -f <path> (kubeconfig) argument and `touch`es the file
+//      so downstream code that expects the file to exist won't fail
+//   c) exits 0 (success)
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aks-set-context-'))
 const binDir = path.join(tempDir, 'bin')
 fs.mkdirSync(binDir, {recursive: true})
@@ -39,6 +47,10 @@ exit 0
 fs.writeFileSync(azPath, azScript, {mode: 0o755})
 fs.chmodSync(azPath, 0o755)
 
+// -- 3. Build the environment the action expects at runtime --
+// RUNNER_TEMP  – where the action writes temporary files (GitHub-provided)
+// PATH         – prepend our stub dir so the fake `az` is found first
+// INPUT_*      – how GitHub Actions passes inputs to action code
 const resourceGroup = 'sample-rg'
 const clusterName = 'sample-cluster'
 
@@ -50,6 +62,7 @@ const env = {
    'INPUT_CLUSTER-NAME': clusterName
 }
 
+// -- 4. Run the bundled action in a child process --
 const child = spawn(process.execPath, [bundlePath], {
    env,
    stdio: 'inherit'
@@ -63,10 +76,14 @@ if (exitCode !== 0) {
    fail(`Bundle execution failed with exit code ${exitCode}`)
 }
 
+// -- 5. Verify the stub `az` was actually called --
 if (!fs.existsSync(logPath)) {
    fail('Expected az to be invoked, but no log was written.')
 }
 
+// -- 6. Assert that az received the correct arguments --
+// We do an ordered subsequence match: the required tokens must appear
+// in order, but other tokens may appear between them.
 const logged = fs.readFileSync(logPath, 'utf8').trim()
 const tokens = logged.split(' ').filter(Boolean)
 const requiredSequence = [
@@ -89,6 +106,7 @@ if (cursor !== requiredSequence.length) {
    fail(`az invocation did not include expected args. Got: ${logged}`)
 }
 
+// -- 7. Verify the kubeconfig path lives inside our temp directory --
 const kubeconfigIndex = tokens.indexOf('-f')
 const kubeconfigPath = tokens[kubeconfigIndex + 1]
 if (!kubeconfigPath || !kubeconfigPath.startsWith(tempDir)) {
