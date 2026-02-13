@@ -28,9 +28,11 @@ fs.mkdirSync(binDir, {recursive: true})
 const logPath = path.join(tempDir, 'az.log')
 const azPath = path.join(binDir, 'az')
 const azScript = `#!/usr/bin/env bash
-set -euo pipefail
-echo "$@" > "${logPath}"
+set -euo pipefail          # abort on errors, undefined vars, or pipe failures
+echo "$@" > "${logPath}"   # log all received arguments so tests can assert on them
 args=("$@")
+# scan for the -f flag to find the kubeconfig output path, then create the
+# file so the action doesn't fail when it checks for its existence afterward
 for ((i=0; i<\${#args[@]}; i++)); do
   if [[ "\${args[$i]}" == "-f" ]]; then
     kubeconfig_path="\${args[$i+1]}"
