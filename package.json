@@ -2,12 +2,13 @@
    "name": "aks-set-context-action",
    "version": "4.0.0",
    "private": true,
-   "main": "lib/login.js",
+   "type": "module",
+   "main": "lib/index.js",
    "scripts": {
-      "prebuild": "npm i @vercel/ncc",
-      "build": "ncc build src/index.ts -o lib",
-      "test": "jest",
-      "test-coverage": "jest --coverage",
+      "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=lib/index.js --banner:js=\"import { createRequire } from 'module';const require = createRequire(import.meta.url);\"",
+      "test:integration": "node scripts/integration-test.mjs",
+      "test": "vitest run",
+      "test-coverage": "vitest run --coverage",
       "format": "prettier --write .",
       "format-check": "prettier --check .",
       "prepare": "husky"
@@ -26,12 +27,11 @@
       "husky": "^9.1.7"
    },
    "devDependencies": {
-      "@types/jest": "^30.0.0",
       "@types/node": "^25.0.9",
-      "@vercel/ncc": "^0.38.4",
-      "jest": "^30.2.0",
+      "@vitest/coverage-v8": "^1.6.1",
+      "esbuild": "^0.25.0",
       "prettier": "^3.8.0",
-      "ts-jest": "^29.4.6",
-      "typescript": "^5.9.3"
+      "typescript": "^5.9.3",
+      "vitest": "^1.6.1"
    }
 }

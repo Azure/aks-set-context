@@ -1,7 +1,8 @@
 {
    "compilerOptions": {
-      "target": "ES6",
-      "module": "commonjs",
+      "target": "ES2020",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "rootDir": "./src",
       "outDir": "./lib"
    },
