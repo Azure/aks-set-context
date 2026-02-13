@@ -1,8 +1,17 @@
+import {afterEach, describe, expect, it, vi} from 'vitest'
 import {run} from './run'
 import * as core from '@actions/core'
 import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as fs from 'fs'
+
+vi.mock('fs', async () => {
+   const actual = await vi.importActual<typeof import('fs')>('fs')
+   return {
+      ...actual,
+      chmodSync: vi.fn()
+   }
+})
 
 const resourceGroup = 'sample-rg'
 const clusterName = 'sample-cluster'
@@ -17,6 +26,10 @@ const date = 1644272184664
 const extendedTimeout = 30000
 
 describe('Set context', () => {
+   afterEach(() => {
+      vi.restoreAllMocks()
+   })
+
    it('throws without resource-group', async () => {
       await expect(run()).rejects.toThrow()
    })
@@ -71,7 +84,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
@@ -105,7 +117,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
@@ -142,7 +153,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
@@ -180,7 +190,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
@@ -219,7 +228,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
@@ -255,7 +263,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
@@ -291,7 +298,6 @@ describe('Set context', () => {
       process.env['RUNNER_TEMP'] = runnerTemp
       jest.spyOn(Date, 'now').mockImplementation(() => date)
       jest.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      jest.spyOn(fs, 'chmodSync').mockImplementation()
       jest.spyOn(core, 'exportVariable').mockImplementation()
       jest.spyOn(core, 'debug').mockImplementation()
 
