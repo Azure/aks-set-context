@@ -5,6 +5,33 @@ import * as io from '@actions/io'
 import * as exec from '@actions/exec'
 import * as fs from 'fs'
 
+vi.mock('@actions/core', async (importOriginal) => {
+   const actual = await importOriginal<typeof import('@actions/core')>()
+   return {
+      ...actual,
+      getInput: vi.fn(),
+      exportVariable: vi.fn(),
+      debug: vi.fn(),
+      setFailed: vi.fn()
+   }
+})
+
+vi.mock('@actions/io', async (importOriginal) => {
+   const actual = await importOriginal<typeof import('@actions/io')>()
+   return {
+      ...actual,
+      which: vi.fn()
+   }
+})
+
+vi.mock('@actions/exec', async (importOriginal) => {
+   const actual = await importOriginal<typeof import('@actions/exec')>()
+   return {
+      ...actual,
+      exec: vi.fn()
+   }
+})
+
 vi.mock('fs', async () => {
    const actual = await vi.importActual<typeof import('fs')>('fs')
    return {
@@ -37,7 +64,7 @@ describe('Set context', () => {
    it(
       'throws without cluster-name',
       async () => {
-         vi.spyOn(core, 'getInput').mockImplementation((inputName) => {
+         vi.mocked(core.getInput).mockImplementation((inputName) => {
             if (inputName == 'resource-group') return resourceGroup
             if (inputName == 'cluster-name') return ''
             return ''
@@ -50,7 +77,7 @@ describe('Set context', () => {
    it(
       'throws if resource-type is not recognized',
       async () => {
-         vi.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+         vi.mocked(core.getInput).mockImplementation((inputName, _options) => {
             if (inputName == 'resource-group') return resourceGroup
             if (inputName == 'cluster-name') return clusterName
             if (inputName == 'resource-type') return 'invalid-resource-type'
@@ -64,9 +91,10 @@ describe('Set context', () => {
    it(
       'throws without az tools',
       async () => {
-         vi.spyOn(core, 'getInput').mockImplementation((inputName) => {
+         vi.mocked(core.getInput).mockImplementation((inputName) => {
             if (inputName == 'resource-group') return resourceGroup
             if (inputName == 'cluster-name') return clusterName
+            return ''
          })
          await expect(run()).rejects.toThrow()
       },
@@ -74,16 +102,15 @@ describe('Set context', () => {
    )
 
    it('gets the kubeconfig and sets the context', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName) => {
+      vi.mocked(core.getInput).mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'cluster-name') return clusterName
+         return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
@@ -105,18 +132,16 @@ describe('Set context', () => {
    })
 
    it('calls az fleet get-credentials when fleet is the resource type', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      vi.mocked(core.getInput).mockImplementation((inputName, _options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'resource-type') return resourceTypeFleet
          return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
@@ -141,18 +166,16 @@ describe('Set context', () => {
    })
 
    it('passes even if resource type has mixed casing', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      vi.mocked(core.getInput).mockImplementation((inputName, _options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'resource-type') return resourceTypeMixedCasingFleet
          return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
@@ -177,19 +200,18 @@ describe('Set context', () => {
    })
 
    it('gets the kubeconfig and sets the context as a non admin user', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName) => {
+      vi.mocked(core.getInput).mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'admin') return 'false'
          if (inputName == 'use-kubelogin') return 'true'
+         return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
       await expect(run()).resolves.not.toThrow()
@@ -216,18 +238,17 @@ describe('Set context', () => {
    })
 
    it('gets the kubeconfig and sets the context with subscription', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName) => {
+      vi.mocked(core.getInput).mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'subscription') return subscription
+         return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
@@ -251,18 +272,17 @@ describe('Set context', () => {
    })
 
    it('gets the kubeconfig and sets the context with admin', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName) => {
+      vi.mocked(core.getInput).mockImplementation((inputName) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'admin') return 'true'
+         return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
@@ -285,19 +305,18 @@ describe('Set context', () => {
    })
 
    it('can use public-fqdn', async () => {
-      vi.spyOn(core, 'getInput').mockImplementation((inputName, options) => {
+      vi.mocked(core.getInput).mockImplementation((inputName, _options) => {
          if (inputName == 'resource-group') return resourceGroup
          if (inputName == 'resource-type') return resourceType
          if (inputName == 'cluster-name') return clusterName
          if (inputName == 'admin') return 'true'
          if (inputName == 'public-fqdn') return 'true'
+         return ''
       })
-      vi.spyOn(io, 'which').mockImplementation(async () => azPath)
+      vi.mocked(io.which).mockResolvedValue(azPath)
       process.env['RUNNER_TEMP'] = runnerTemp
       vi.spyOn(Date, 'now').mockImplementation(() => date)
-      vi.spyOn(exec, 'exec').mockImplementation(async () => 0)
-      vi.spyOn(core, 'exportVariable').mockImplementation()
-      vi.spyOn(core, 'debug').mockImplementation()
+      vi.mocked(exec.exec).mockResolvedValue(0)
 
       await expect(run()).resolves.not.toThrow()
       const kubeconfigPath = `${runnerTemp}/kubeconfig_${date}`
