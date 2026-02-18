@@ -21,16 +21,16 @@
    "author": "GitHub",
    "license": "MIT",
    "dependencies": {
-      "@actions/core": "^2.0.2",
-      "@actions/exec": "^2.0.0",
-      "@actions/io": "^2.0.0",
+      "@actions/core": "^3.0.0",
+      "@actions/exec": "^3.0.0",
+      "@actions/io": "^3.0.2",
       "husky": "^9.1.7"
    },
    "devDependencies": {
-      "@types/node": "^25.0.9",
+      "@types/node": "^25.2.3",
       "@vitest/coverage-v8": "^4.0.18",
-      "esbuild": "^0.25.0",
-      "prettier": "^3.8.0",
+      "esbuild": "^0.27.3",
+      "prettier": "^3.8.1",
       "typescript": "^5.9.3",
       "vitest": "^4.0.18"
    }
