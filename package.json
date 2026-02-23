@@ -27,7 +27,7 @@
       "husky": "^9.1.7"
    },
    "devDependencies": {
-      "@types/node": "^25.2.3",
+      "@types/node": "^25.3.0",
       "@vitest/coverage-v8": "^4.0.18",
       "esbuild": "^0.27.3",
       "prettier": "^3.8.1",
