@@ -30,5 +30,5 @@ inputs:
 branding:
    color: 'green'
 runs:
-   using: 'node20'
+   using: 'node24'
    main: 'lib/index.js'
