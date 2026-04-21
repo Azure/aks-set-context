@@ -30,8 +30,8 @@
       "@types/node": "^25.6.0",
       "@vitest/coverage-v8": "^4.1.4",
       "esbuild": "^0.28.0",
-      "prettier": "^3.8.2",
-      "typescript": "^6.0.2",
+      "prettier": "^3.8.3",
+      "typescript": "^6.0.3",
       "vitest": "^4.0.18"
    }
 }
