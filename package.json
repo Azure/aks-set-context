@@ -21,14 +21,14 @@
    "author": "GitHub",
    "license": "MIT",
    "dependencies": {
-      "@actions/core": "^3.0.0",
+      "@actions/core": "^3.0.1",
       "@actions/exec": "^3.0.0",
       "@actions/io": "^3.0.2",
       "husky": "^9.1.7"
    },
    "devDependencies": {
       "@types/node": "^25.6.0",
-      "@vitest/coverage-v8": "^4.1.4",
+      "@vitest/coverage-v8": "^4.1.5",
       "esbuild": "^0.28.0",
       "prettier": "^3.8.3",
       "typescript": "^6.0.3",
