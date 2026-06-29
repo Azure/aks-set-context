@@ -27,10 +27,10 @@
       "husky": "^9.1.7"
    },
    "devDependencies": {
-      "@types/node": "^26.0.0",
+      "@types/node": "^26.0.1",
       "@vitest/coverage-v8": "^4.1.9",
       "esbuild": "^0.28.1",
-      "prettier": "^3.8.4",
+      "prettier": "^3.9.3",
       "typescript": "^6.0.3",
       "vitest": "^4.0.18"
    }
