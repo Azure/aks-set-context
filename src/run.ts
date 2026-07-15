@@ -33,8 +33,7 @@ export async function run() {
       const resourceTypeManagedCluster =
          'microsoft.containerservice/managedclusters'
       type ResourceType =
-         | typeof resourceTypeFleet
-         | typeof resourceTypeManagedCluster
+         typeof resourceTypeFleet | typeof resourceTypeManagedCluster
       const resourceInput = (
          core.getInput('resource-type') ||
          'Microsoft.ContainerService/managedClusters'
