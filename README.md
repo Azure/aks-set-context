@@ -139,7 +139,7 @@ is enforced two ways:
 install it once with the age check disabled:
 
 ```sh
-npm install <pkg> --config.min-release-age=0
+npm install <pkg> --min-release-age=0
 ```
 
 ## Contributing
