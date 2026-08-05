@@ -20,6 +20,9 @@
    ],
    "author": "GitHub",
    "license": "MIT",
+   "engines": {
+      "npm": ">=11.10.0"
+   },
    "dependencies": {
       "@actions/core": "^3.0.1",
       "@actions/exec": "^3.0.0",
